@@ -22,9 +22,20 @@ DO i=1,imax
 	WRITE(26,*) rR(i),cR(i)
 END DO
 
-DO i=1,imax-1
+iLower = 1
+
+! make sure rR(1) is less than your first radial location (0.275)
+! make sure rR(iMax) is greater than your last radial location (1)
+! if not, print error and quit
+
+DO i=1,15
 	rRi(i) = 0.275+0.05*(i-1)
-	WRITE(6,*) rR(i),cR(i)
+	! Increment iLower until rR(iLower)
+	DO WHILE (rRi(i) < rR(iLower))
+		iLower = iLower + 1
+	END DO
+	! Interpolate between rR(iLower) and rR(iLower + 1)
+!	WRITE(6,*) rR(i),cR(i)
 	WRITE(6,*) rRi(i)
 	IF (rR(i) <= rRi(i) .AND. rR(i+1) >= rRi(i)) THEN
 		cRi(i) = cR(i) + ((cR(i+1)-cR(i))/(rR(i+1)-rR(i)))*(rRi(i)-rR(i))
@@ -32,7 +43,7 @@ DO i=1,imax-1
 	!ELSE IF ()
 
 	ELSE 
-	WRITE(6,*) "FUUUUUUUCK"
+!	WRITE(6,*) "FUUUUUUUCK"
 
 	END IF
 	!WRITE(6,*) rRi(i)!,cRi(i)

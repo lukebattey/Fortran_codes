@@ -20,37 +20,34 @@ rRinc = (rRmax - rRmin)/(numrR - 1)
 
 OPEN(16,FILE = 'Blade_geo_tab.txt', FORM = 'FORMATTED')
 OPEN(26,FILE = 'Nondim_blade.txt', FORM = 'FORMATTED')
+OPEN(36,FILE = '05_step_blade_geo.txt', FORM = 'FORMATTED')
 
 DO i=1,imax
 	READ(16,*) r(i),c(i),tw(i)
 	rR(i) = r(i)/Rmax
 	cR(i) = c(i)/Rmax
-	WRITE(26,*) rR(i),cR(i)
+	WRITE(26,*) rR(i),cR(i),tw(i)
 END DO
 
-! make sure rR(1) is less than your first radial location (0.275)
-! make sure rR(iMax) is greater than your last radial location (1)
-! if not, print error and quit
+!--- CHECK IF INTERPOLATION IS POSSIBLE --------
+
 IF (rR(1)<rRmin .AND. rR(imax)>rRmax) THEN
 ELSE
-WRITE(6,*) 'ERROR ERROR ERROR'
+WRITE(6,*) 'ERROR! WEE-WOO WEE-WOO (siren sound) PROGRAM TERMINATED!'
+STOP
 END IF
 
-!go to 100
+!--- INTERPOLATION! with nested loop :( ---------
 
 DO i=1,numrR
     rRi(i) = rRmin + rRinc*(i*1.0-1.0)
-!WRITE(6,*) rRi(i)
-! Increment il until rR(iLower)
-	    DO WHILE (rRi(i) < rR(il))
-        il = il + 1
-	    END DO 
-	    WRITE(6,*) il
-	! Interpolate between rR(il) and rR(il + 1)
-	!	cRi(i) = cR(i) + ((cR(i+1)-cR(i))/(rR(il+1)-rR(il)))*(rRi(i)-rR(il))
-	!	WRITE(6,*) rRi(i),cRi(i)
+    DO il=1,imax-1
+        IF (rR(il) < rRi(i) .AND. rR(il+1) > rRi(i)) THEN
+            cRi(i) = cR(il) + ((cR(il+1)-cR(il))/(rR(il+1)-rR(il)))*(rRi(i)-rR(il))
+            twi(i) = tw(il) + ((tw(il+1)-tw(il))/(rR(il+1)-rR(il)))*(rRi(i)-rR(il))
+        END IF
+    END DO
+    WRITE(36,*) rRi(i),cRi(i),twi(i)
 END DO
-
-!100 continue
 
 END PROGRAM nondim_interpol_blade

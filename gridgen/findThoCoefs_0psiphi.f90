@@ -17,7 +17,9 @@ REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:,:) :: X,Xsi,Xsisi,Xeta,Xetaeta, &
 OPEN(26,FILE = 'clust_alg_grid.xy', FORM = 'FORMATTED')
 
 READ(26,*) imax,jmax
-nmax = 50 ! assumes n wont exceed nmax...
+nmax = 50 ! assumes n wont exceed nmax... 
+
+! IS THERE A BETTER WAY TO DO THIS?????? If it matters or if there arent more pressing issues
 
 ALLOCATE(X(imax,jmax,nmax),Xsi(imax,jmax,nmax),Xsisi(imax,jmax,nmax),Xeta(imax,jmax,nmax), &
          Xetaeta(imax,jmax,nmax), &
@@ -32,7 +34,6 @@ n = 1
 DO j=1,jmax                                                      
 	DO i=1,imax                                                  
         READ(26,*) X(i,j,n),Y(i,j,n)
-    !WRITE(6,*) X(i,j,n),Y(i,j,n)
     END DO 
 END DO
 CLOSE(26) 

@@ -46,30 +46,30 @@ n = 1
 DO j=1,jmax,(jmax-1)
     DO i=2,imax-1
         IF (ABS((X(i+1,j,n)-X(i-1,j,n))/2) > ABS(Y(i+1,j,n)-Y(i-1,j,n)/2)) THEN
-            phi(i,j) = -2(X(i+1,j,n)-2*X(i,j,n)+X(i-1,j,n))/(X(i+1,j,n)-X(i-1,j,n))
+            phi(i,j) = -2*(X(i+1,j,n)-2*X(i,j,n)+X(i-1,j,n))/(X(i+1,j,n)-X(i-1,j,n))
         ELSE
-            phi(i,j) = -2(Y(i+1,j,n)-2*Y(i,j,n)+Y(i-1,j,n))/(Y(i+1,j,n)-Y(i-1,j,n))
+            phi(i,j) = -2*(Y(i+1,j,n)-2*Y(i,j,n)+Y(i-1,j,n))/(Y(i+1,j,n)-Y(i-1,j,n))
         END IF
     END DO
 END DO
 
-!DO i=1,imax,(imax-1)
- !   DO j=2,jmax-1
-  !      IF (ABS((X(i,j+1,n)-X(i,j-1,n))/2) > ABS(Y(i,j+1,n)-Y(i,j-1,n)/2)) THEN
-   !         psi(i,j) = -2(X(i,j+1,n)-2*X(i,j,n)+X(i,j-1,n))/(X(i,j+1,n)-X(i,j-1,n))
-    !    ELSE
-     !       psi(i,j) = -2(Y(i,j+1,n)-2*Y(i,j,n)+Y(i,j-1,n))/(Y(i,j+1,n)-Y(i,j-1,n))
-      !  END IF
-!    END DO
-!END DO
+DO i=1,imax,(imax-1)
+    DO j=2,jmax-1
+        IF (ABS((X(i,j+1,n)-X(i,j-1,n))/2) > ABS(Y(i,j+1,n)-Y(i,j-1,n)/2)) THEN
+            psi(i,j) = -2*(X(i,j+1,n)-2*X(i,j,n)+X(i,j-1,n))/(X(i,j+1,n)-X(i,j-1,n))
+        ELSE
+            psi(i,j) = -2*(Y(i,j+1,n)-2*Y(i,j,n)+Y(i,j-1,n))/(Y(i,j+1,n)-Y(i,j-1,n))
+        END IF
+    END DO
+END DO
 
-!DO j=2,jmax-1
- !   DO i=2,imax
-  !      phi(i,j) = phi(1,j)+((i-1)/(imax-1))*(phi(imax,j)-phi(1,j))
-   !     psi(i,j) = phi(i,1)+((j-1)/(jmax-1))*(phi(i,jmax)-phi(i,1))
-    !WRITE(6,*) phi(i,j),psi(i,j)
-!    END DO
-!END DO
+DO j=2,jmax-1
+    DO i=2,imax
+        phi(i,j) = phi(1,j)+((i-1)/(imax-1))*(phi(imax,j)-phi(1,j))
+        psi(i,j) = phi(i,1)+((j-1)/(jmax-1))*(phi(i,jmax)-phi(i,1))
+    WRITE(6,*) phi(i,j),psi(i,j)
+    END DO
+END DO
 
 !----------------------- set boundaries to be constant -----------------------------------
 DO n=1,15
@@ -78,7 +78,6 @@ DO n=1,15
     X(i,jmax,n) = X(i,jmax,1)
     Y(i,1,n) = Y(i,1,1)
     Y(i,jmax,n) = Y(i,jmax,1)
-    !WRITE(6,*) X(i,1,n),X(i,jmax,n),Y(i,1,n),Y(i,jmax,n)
     END DO 
 
     DO j=1,jmax
@@ -86,7 +85,6 @@ DO n=1,15
     X(imax,j,n) = X(imax,j,1)
     Y(1,j,n) = Y(1,j,1)
     Y(imax,j,n) = Y(imax,j,1)
-    !WRITE(6,*) X(i,1,n),X(i,jmax,n),Y(i,1,n),Y(i,jmax,n)
     END DO
 END DO
 

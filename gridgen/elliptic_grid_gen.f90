@@ -19,7 +19,7 @@ REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:) :: RMSres,Sres
 OPEN(26,FILE = 'clust_alg_grid.xy', FORM = 'FORMATTED')
 
 READ(26,*) imax,jmax
-nmax = 50 ! assumes n wont exceed nmax... 
+nmax = 60 ! assumes n wont exceed nmax... 
 
 ! ^ IS THERE A BETTER WAY TO DO THIS?????? If it matters or if there arent more pressing issues
 
@@ -71,29 +71,27 @@ DO j=2,jmax-1
    END DO
 END DO
 
-!----------------------- set boundaries to be constant -----------------------------------
-DO n=1,nmax
-	DO i=1,imax
-    X(i,1,n) = X(i,1,1)                 !          ^
-    X(i,jmax,n) = X(i,jmax,1)           !          |
-    Y(i,1,n) = Y(i,1,1)
-    Y(i,jmax,n) = Y(i,jmax,1)          ! FEED THIS SECTION INTO THE MAIN LOOP (eventually)
-    END DO 
-
-    DO j=1,jmax
-    X(1,j,n) = X(1,j,1)
-    X(imax,j,n) = X(imax,j,1)
-    Y(1,j,n) = Y(1,j,1)
-    Y(imax,j,n) = Y(imax,j,1)
-    END DO
-END DO
 !--------------------------------------------------------------------------------------------------------
 !======================= MAIN LOOP STARTS HERE ==========================================================
 !--------------------------------------------------------------------------------------------------------
-!n = 1 
-DO n = 1,nmax-1
+DO n = 1,nmax
+!----------------------- set boundaries to be constant -----------------------------------
+	DO i=1,imax
+    X(i,1,n+1) = X(i,1,1)               
+    X(i,jmax,n+1) = X(i,jmax,1)           
+    Y(i,1,n+1) = Y(i,1,1)
+    Y(i,jmax,n+1) = Y(i,jmax,1)          
+    END DO 
+
+    DO j=1,jmax
+    X(1,j,n+1) = X(1,j,1)
+    X(imax,j,n+1) = X(imax,j,1)
+    Y(1,j,n+1) = Y(1,j,1)
+    Y(imax,j,n+1) = Y(imax,j,1)
+    END DO
+
 DO j=2,jmax-1
-!----------------------- get alpha, beta, and gama ---------------------------------------
+!-------------------------- get alpha, beta, and gama ---------------------------------------
 DO i=2,imax-1
     Xeta(i,j,n) = (X(i,j+1,n)-X(i,j-1,n))/2
     Yeta(i,j,n) = (Y(i,j+1,n)-Y(i,j-1,n))/2
@@ -138,7 +136,6 @@ DO i=2,imax-1
   xResid(i,j,n) = bbx(i,j,n)*X(i-1,j,n)+ddx(i,j,n)*X(i,j,n)+aax(i,j,n)*X(i+1,j,n)-ccx(i,j,n)
   yResid(i,j,n) = bby(i,j,n)*Y(i-1,j,n)+ddy(i,j,n)*Y(i,j,n)+aay(i,j,n)*Y(i+1,j,n)-ccy(i,j,n)
   END IF
-
 END DO
 
 !----------------- Setting Thomas array boundaries -----------------------------------------
@@ -181,7 +178,7 @@ ccy(imax,j,n) = y(imax,j,n)
         Y(i,j,n+1) = ccy(i,j,n)
 	END DO
 
-!----------------------- Find Residual for every point ---------------------------------------------------
+!----------------------- Find Residual and its sum of squares ------------------------------------
 Sres(n) = 0
 DO i = 2,imax-1
   xResid(i,j,n+1) = bbx(i,j,n)*X(i-1,j,n)+ddx(i,j,n)*X(i,j,n)+aax(i,j,n)*X(i+1,j,n)-ccx(i,j,n)
@@ -192,11 +189,12 @@ END DO
 
 END DO !---->  j loop
 
-WRITE(6,*) SQRT(Sres(n)/((imax-2)*(jmax-2)*2)) 
+RMSres(n) = SQRT(Sres(n)/((imax-2)*(jmax-2)*2)) 
+WRITE(6,*) n,RMSres(n)
 
-END DO !---->  n loop
+END DO !---->  n loop (main)
 
-!--------------------------------- Writing Results ----------------------------------------
+!------------------------- Writing Results for TecPlot360ex----------------------------------------
 
 !DO j=1,jmax
  !   DO i=1,imax

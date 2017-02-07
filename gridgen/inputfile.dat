@@ -1,0 +1,5 @@
+clust_alg_grid.dat			! <-- Input grid file name (30 characters max please)
+psipsi_elliptic_grid.dat	! <-- Output grid file name (also 30 characters max)
+FALSE						! <-- Use source terms phi and psi? (TRUE or FALSE)
+60							! <-- Max # of interations (if below criteria isn't met)
+1e-6						! <-- Convergence criteria (RMS residual value)

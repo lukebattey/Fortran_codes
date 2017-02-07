@@ -59,7 +59,7 @@ END DO
 
 
 
-DO n = 1,10
+DO n = 1,9
 DO j=2,jmax-1
 !----------------------- get alpha, beta, and gama ---------------------------------------
 	DO i=2,imax-1

@@ -2,7 +2,7 @@ PROGRAM elliptic_grid_gen
     IMPLICIT NONE
 !
 !----------------------------Variables ---------------------------------------------------
-INTEGER,PARAMETER::rDef=SELECTED_REAL_KIND(12)
+INTEGER,PARAMETER:: rDef=SELECTED_REAL_KIND(12)
 INTEGER::i,j,n,k,p,imax,jmax,nmax,itr
 REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:,:) :: X,Xsi,Xsisi,Xeta,Xetaeta, &
                                                 Y,Ysi,Ysisi,Yeta,Yetaeta, &
@@ -11,9 +11,10 @@ REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:,:) :: X,Xsi,Xsisi,Xeta,Xetaeta, &
                                                 bby,ddy,aay,ccy,xResid,yResid
 
 REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:) :: psi,phi
-REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:) :: RMSres,Sres,cRMSr
+REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:) :: RMSres,Sres
 CHARACTER(len=30) :: infile,outfile
 LOGICAL :: srctrms
+REAL(KIND=rDef) :: cRMSr
 !----------------------- Open files and set stipulations -----------------------------------------
 
 OPEN(16,FILE = 'inputfile.dat', FORM = 'FORMATTED')
@@ -74,6 +75,7 @@ DO j=2,jmax-1
         psi(i,j) = psi(1,j)+((i-1.0)/(imax-1.0))*(psi(imax,j)-psi(1,j))
     END DO
 END DO
+
 
 !--------------------------------------------------------------------------------------------------------
 !======================= MAIN LOOP STARTS HERE ==========================================================
@@ -192,17 +194,33 @@ DO n = 1,nmax
 END DO !---->  j loop
 
 RMSres(n) = SQRT(Sres(n)/((imax-2)*(jmax-2)*2)) 
+
+IF (RMSres(n) <= cRMSr) THEN
 WRITE(6,*) n,RMSres(n)
+WRITE(6,'(A)') ' '
+WRITE(6,'(A,I3,A)') 'Met convergence criteria in ',n,' iterations'
+WRITE(6,'(A)') 'RMS residual history written above'
+EXIT
+ELSE
+WRITE(6,*) n,RMSres(n)
+END IF
 
 END DO !---->  n loop (main)
+!--------------------------------------------------------------------------------------------------
+!======================= END OF MAIN LOOP =========================================================
+!--------------------------------------------------------------------------------------------------
 
-!------------------------- Writing Results to file for TecPlot360ex----------------------------------------
+!-----------------------------Just in case -----------------------------------------------------
+IF (n >= nmax .AND. RMSres(nmax) > cRMSr) THEN
+WRITE(6,'(A)') 'CONVERGENCE CRITERIA NOT MET! Grid was still written.'
+WRITE(6,'(A)') 'RMS residual history written above'
+END IF
 
-
-!DO j=1,jmax
- !   DO i=1,imax
- !  WRITE(6,*) X(i,j,10),Y(i,j,10)
- !  END DO
-!END DO
+!------------------------- Writing Results to file for TecPlot360ex--------------------------------
+! DO j=1,jmax
+!     DO i=1,imax
+!    WRITE(6,*) X(i,j,10),Y(i,j,10)
+!    END DO
+! END DO
 
 END PROGRAM elliptic_grid_gen

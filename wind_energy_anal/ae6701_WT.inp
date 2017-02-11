@@ -1,11 +1,12 @@
   5.03       ! Blade radius (m)
+  0.25       ! Root cut-out (r/R)
   2          ! # of rotor blades
   1.225      ! Air Density (kg/m^2)
   5.00       ! Blade pitch (degrees)
   72         ! Rotor Speed (rpm)
   3,15,1     ! Min wind vel., Max wind vel., Wind vel. step (m/s, integers only)
-  1          ! # of Airfoil data files --> List files as 'path/name' (90 char. max!):           
-  S809_cln.dat                                                    
+  1          ! # of Airfoil data files --> List file names (90 char. max!):           
+  S809_Cln_AE6701.dat                                                    
   15         ! # of segments --> r/R, c/R, twist, ai (airfoil file index)
   0.27500000596046448       0.14397421505665725        17.198662776714446                1
   0.32500000723770689       0.13887903667077425        12.254790010604804                1

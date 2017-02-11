@@ -13,9 +13,10 @@ PROGRAM elliptic_grid_gen
     REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:) :: psi,phi
     REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:) :: RMSres,Sres
     CHARACTER(len=30) :: infile,outfile
+    CHARACTER(len=8) :: junk
     LOGICAL :: srctrms
     REAL(KIND=rDef) :: cRMSr
-    !----------------------- Open files and set stipulations -----------------------------------------
+    !----------------------- Open files and set stipulations --------------------------------------
 
     OPEN(16,FILE = 'inputfile.dat', FORM = 'FORMATTED')
     READ(16,*) infile 
@@ -26,8 +27,9 @@ PROGRAM elliptic_grid_gen
 
     OPEN(26,FILE = infile, FORM = 'FORMATTED')
 
-    READ(26,*) imax,jmax
-
+    READ(26,'(A)') junk 
+    READ(26,'(A,I3,A,I3)') junk,imax,junk,jmax
+    
     ALLOCATE(X(imax,jmax,nmax+1),Xsi(imax,jmax,nmax),Xsisi(imax,jmax,nmax),Xeta(imax,jmax,nmax), &
         Xetaeta(imax,jmax,nmax), &
         Y(imax,jmax,nmax+1),Ysi(imax,jmax,nmax),Ysisi(imax,jmax,nmax),Yeta(imax,jmax,nmax), &
@@ -198,8 +200,9 @@ DO n = 1,nmax
     IF (RMSres(n) <= cRMSr) THEN
         WRITE(6,*) n,RMSres(n)
         WRITE(6,'(A)') ' '
-        WRITE(6,'(A,I3,A)') 'Met convergence criteria in ',n,' iterations'
-        WRITE(6,'(A)') 'RMS residual history written above'
+        WRITE(6,'(A,I3,A)') ' Met convergence criteria in ',n,' iterations'
+        WRITE(6,*) 'RMS residual history written above.'
+        WRITE(6,*) 'Grid wrote to:   ',outfile
         EXIT
     ELSE
         WRITE(6,*) n,RMSres(n)
@@ -219,7 +222,7 @@ END DO !---->  n loop (main)
     !------------------------- Writing Results to file for TecPlot360ex--------------------------------
     OPEN(36,FILE = outfile, FORM = 'FORMATTED')
     WRITE(36,'(A)') 'VARIABLES = "X" "Y" '
-    WRITE(36,'(A,I3,A,I3)') 'ZONE  I= ',imax,'  J= ',jmax
+    WRITE(36,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
     DO j=1,jmax
       DO i=1,imax
         WRITE(36,*) X(i,j,n),Y(i,j,n)

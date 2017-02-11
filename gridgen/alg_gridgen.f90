@@ -6,7 +6,6 @@ PROGRAM alg_gridgen
 !   (Cy = 0.001) and is written to the "unclust_alg_grid.xy" output file. The second grid does 
 !   cluster in the only the y direction (Cy = 2.0) and is written to the      
 !
-!
 !----------------------------Variables -----------------------------
 INTEGER,PARAMETER::rDef=SELECTED_REAL_KIND(10)
 INTEGER,PARAMETER:: imax=41,jmax=19,fi=11,di=31,ci=41
@@ -21,8 +20,8 @@ REAL(KIND=rDef):: cy
 
 !----------------- Open files and set stipulations ---------------
 
-OPEN(16,FILE = 'unclust_alg_grid.xy', FORM = 'FORMATTED')
-OPEN(26,FILE = 'clust_alg_grid.xy', FORM = 'FORMATTED')
+OPEN(16,FILE = 'unclust_alg_grid.dat', FORM = 'FORMATTED')
+OPEN(26,FILE = 'clust_alg_grid.dat', FORM = 'FORMATTED')
 
 DO g=1,2
 
@@ -72,8 +71,8 @@ DO j=2,jmax-1
     END DO
 END DO
 
-WRITE(F,*) imax,jmax
-
+WRITE(F,'(A)') 'VARIABLES = "X" "Y" '
+WRITE(F,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
 DO j=1,jmax
 	DO i=1,imax
         WRITE(F,*) x(i,j),y(i,j)

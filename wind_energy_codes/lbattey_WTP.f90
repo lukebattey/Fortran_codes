@@ -1,28 +1,26 @@
-PROGRAM wT_ae6701
+PROGRAM lbattey_WTP
     IMPLICIT NONE
 
 INTEGER,PARAMETER::rDef=SELECTED_REAL_KIND(10)
 REAL(KIND=rDef),PARAMETER :: pi = 4.0*ATAN(1.0)
 INTEGER :: vmax,vmin,vstep,V,B,i,af,imax,numaf,nAl,n,nmax
 CHARACTER(len=90),ALLOCATABLE,DIMENSION(:) :: airfile 
-REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:) :: rR,cR,tw, &
-                                            a,ap,Cnor,Ctan,P
-
+REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:) :: rR,cR,tw,Cnor,Ctan,P
 REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:) :: alpha,cl,cd
 INTEGER,ALLOCATABLE,DIMENSION(:) :: ai,nAlM 
 REAL(KIND=rDef):: R,rho,rpm,pitch,numjunk,omega,wSec,rtcut,lam,sig, &
-                  F,A1,B1,phir,Lp,Dp,Psec,Vn,Vt,phi,beta,iAl,cli,cdi
+                  F,A1,B1,phir,Lp,Dp,Psec,Vn,Vt,phi,beta,iAl,cli,cdi, &
+                  a,aLast,ap,apLast
 
 OPEN(16,FILE = 'ae6701_WT.inp', FORM = 'FORMATTED')
-
 READ(16,*) R
 READ(16,*) rtcut
 READ(16,*) B
 READ(16,*) rho
 READ(16,*) pitch
 READ(16,*) rpm
-READ(16,*) vmin,vmax,vstep
 
+READ(16,*) vmin,vmax,vstep
 ALLOCATE(P(vmax-vmin+2))
 
 READ(16,*) numaf
@@ -50,8 +48,7 @@ END DO
 
 omega = rpm*2.0*pi/60.0
 wSec = (R-rtcut*R)/imax
-nmax = 20      
-ALLOCATE(a(nmax),ap(nmax))
+nmax = 10      
 !-------------------------------------------------------------------------
 !===================== MAIN LOOP STARTS HERE =============================
 !-------------------------------------------------------------------------
@@ -61,13 +58,13 @@ DO V = vmin,vmax,vstep
         lam = omega*rR(i)*R/V
         sig = (B*cR(i)*R)/(2*pi*rR(i)*R)
         beta = tw(i) + pitch
-        a(1) = 0.25*(2.0+(pi*lam*sig)-SQRT(4-(4*pi*lam*sig) &
+        aLast = 0.25*(2.0+(pi*lam*sig)-SQRT(4-(4*pi*lam*sig) &
                +(pi*(lam**2)*sig)*((8*pi*beta/180.0)+(pi*sig))))
-        ap(1) = 0
+        apLast = 0
         !-------------------- iteratively solve for a and ap -------------
         DO n = 1,nmax
-            Vn = V*(1-a(n))
-            Vt = omega*rR(i)*R*(1+ap(n))
+            Vn = V*(1-aLast)
+            Vt = omega*rR(i)*R*(1+apLast)
             phi = 180*(ATAN2(Vn,Vt))/pi
             beta = tw(i) + pitch
             iAl = phi - beta
@@ -92,16 +89,18 @@ DO V = vmin,vmax,vstep
             A1 = 4.0*F*((SIN(phir))**2)
             B1 = sig*(cli*COS(phir)+cdi*SIN(phir))
 
-            a(n+1) = (1.0+A1/b1)**(-1.0)
-            ap(n+1) = (-1.0+(4.0*F *SIN(phir)*COS(phir))/ &
+            a = (1.0+A1/b1)**(-1.0)
+            ap = (-1.0+(4.0*F *SIN(phir)*COS(phir))/ &
             (sig*(cli*SIN(phir)-cdi*COS(phir))))**(-1.0)
 
-            IF( (ABS(a(n+1)-a(n))+ABS(ap(n+1)-ap(n))) <= 1.0e-9) THEN 
+            IF( (ABS(a-aLast)+ABS(ap-apLast)) <= 1.0e-9) THEN 
                 EXIT
             END IF
+            aLast = a
+            apLast = ap
         END DO
 
-        !------------- Find Coefs of lift and Total Power --------------
+        !------------- Find Coefs of lift and Total Power ----------------
         Lp = 0.5*rho*(Vn**2 + Vt**2)*cR(i)*R*cli
         Dp = 0.5*rho*(Vn**2 + Vt**2)*cR(i)*R*cdi
         
@@ -114,7 +113,11 @@ DO V = vmin,vmax,vstep
         END IF
     END DO
 END DO  
+!=========================================================================
+!------------------------- END OF MAIN LOOP ------------------------------
+!=========================================================================
 
+!--------------------- Write Output to Terminal ---------------------------
 WRITE(6,*) 'Total Power Output at Wind Speeds:'
 WRITE(6,*) 'V (m/s)     P (kW)'
 DO v = vmin,vmax,vstep
@@ -124,7 +127,7 @@ END DO
 WRITE(6,*) 'Sectonal Force Coefs at r/R Values for V = 7 m/s'
 WRITE(6,*) 'r/R     C_normal     C_tangential'
 DO i = 1,imax
-    WRITE(6,'(F5.3,F15.5,F15.5)') rR(i),Cnor(i),Ctan(i)
+    WRITE(6,'(F5.3,F12.5,F13.5)') rR(i),Cnor(i),Ctan(i)
 END DO
 
-END PROGRAM wT_ae6701
+END PROGRAM lbattey_WTP

@@ -83,6 +83,7 @@ PROGRAM elliptic_grid_gen
 !======================= MAIN LOOP STARTS HERE ==========================================================
 !--------------------------------------------------------------------------------------------------------
 DO n = 1,nmax
+    Sres(n) = 0
     !----------------------- set boundaries to be constant -----------------------------------
     DO i=1,imax
         X(i,1,n+1) = X(i,1,1)               
@@ -185,7 +186,6 @@ DO n = 1,nmax
         END DO
 
         !----------------------- Find Residual and its sum of squares ------------------------------------
-        Sres(n) = 0
         DO i = 2,imax-1
             xResid(i,j,n+1) = bbx(i,j,n)*X(i-1,j,n)+ddx(i,j,n)*X(i,j,n)+aax(i,j,n)*X(i+1,j,n)-ccx(i,j,n)
             yResid(i,j,n+1) = bby(i,j,n)*Y(i-1,j,n)+ddy(i,j,n)*Y(i,j,n)+aay(i,j,n)*Y(i+1,j,n)-ccy(i,j,n)

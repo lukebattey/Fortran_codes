@@ -3,13 +3,14 @@ PROGRAM elliptic_grid_gen
 !----------------------------Variables ----------------------------------------
 INTEGER,PARAMETER:: rDef=SELECTED_REAL_KIND(12)
 INTEGER::i,j,n,k,p,imax,jmax,nmax,itr
-REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:) :: X,Xsi,Xeta,Y,Ysi,Yeta, &
+REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:) :: X,Y,Ja, &
 alpha,beta,gama,bbx,ddx,aax,ccx,bby,ddy,aay,ccy,xResid,yResid,XNext,YNext, &
 xResidNext,yResidNext,psi,phi
 CHARACTER(len=30) :: infile,outfile
 CHARACTER(len=8) :: junk
 LOGICAL :: srctrms
-REAL(KIND=rDef) :: cRMSr,eRMSres,Sres
+REAL(KIND=rDef) :: cRMSr,eRMSres,Sres,xSres,ySres,xyRMSres,Xsi,Xeta,Ysi,Yeta, &
+XeRMSres,YeRMSres
 
 !----------------------- Open files and set stipulations ----------------------
 OPEN(16,FILE = 'inputfile.dat', FORM = 'FORMATTED')
@@ -24,8 +25,8 @@ OPEN(26,FILE = infile, FORM = 'FORMATTED')
 READ(26,'(A)') junk 
 READ(26,'(A,I3,A,I3)') junk,imax,junk,jmax
 
-ALLOCATE(X(imax,jmax),Xsi(imax,jmax),Xeta(imax,jmax),Y(imax,jmax), &
-Ysi(imax,jmax),Yeta(imax,jmax),alpha(imax,jmax),beta(imax,jmax), &
+ALLOCATE(X(imax,jmax),Y(imax,jmax),Ja(imax,jmax), &
+alpha(imax,jmax),beta(imax,jmax), &
 gama(imax,jmax),bbx(imax,jmax),ddx(imax,jmax),aax(imax,jmax),ccx(imax,jmax), &
 bby(imax,jmax),ddy(imax,jmax),aay(imax,jmax),ccy(imax,jmax),xResid(imax,jmax), &
 yResid(imax,jmax),XNext(imax,jmax),YNext(imax,jmax),xResidNext(imax,jmax), &
@@ -38,7 +39,7 @@ DO j=1,jmax
 END DO
 CLOSE(26) 
 
-!-------------------- Find Phi and Psi (constant with n; woohoo!) ------------------------
+!-------------- Find Phi and Psi (constant with n; woohoo!) ------------------
 n = 1
 DO j=1,jmax,(jmax-1)
   DO i=2,imax-1
@@ -67,7 +68,7 @@ DO j=2,jmax-1
   END DO
 END DO
 
-!----------------------- set boundaries to be constant --------------------------------------
+!----------------------- set boundaries to be constant ----------------------------------
 DO i=1,imax
     XNext(i,1) = X(i,1)               
     XNext(i,jmax) = X(i,jmax)           
@@ -82,25 +83,27 @@ DO j=1,jmax
     YNext(imax,j) = Y(imax,j)
 END DO
 
-!----------------------------------------------------------------------------------------------
-!======================= MAIN LOOP STARTS HERE ================================================
-!----------------------------------------------------------------------------------------------
+!----------------------------------------------------------------------------------------
+!======================= MAIN LOOP STARTS HERE ==========================================
+!----------------------------------------------------------------------------------------
 DO n = 1,nmax
-Sres = 0.0
+ Sres = 0.0
+ xSres = 0.0
+ ySres = 0.0
   DO j=2,jmax-1
-  !-------------------------- get alpha, beta, and gama -------------------------------------
+  !-------------------------- get alpha, beta, and gama ---------------------------------
     DO i=2,imax-1
-      Xeta(i,j) = (X(i,j+1)-X(i,j-1))/2
-      Yeta(i,j) = (Y(i,j+1)-Y(i,j-1))/2
-      alpha(i,j) = ((Xeta(i,j))**2)+((Yeta(i,j))**2)
+      Xeta = (X(i,j+1)-X(i,j-1))/2
+      Yeta = (Y(i,j+1)-Y(i,j-1))/2
+      alpha(i,j) = ((Xeta)**2)+((Yeta)**2)
 
-      Xsi(i,j) = (X(i+1,j)-X(i-1,j))/2
-      Ysi(i,j) = (Y(i+1,j)-Y(i-1,j))/2 
-      gama(i,j) = ((Xsi(i,j))**2)+((Ysi(i,j))**2)
+      Xsi = (X(i+1,j)-X(i-1,j))/2
+      Ysi = (Y(i+1,j)-Y(i-1,j))/2 
+      gama(i,j) = ((Xsi)**2)+((Ysi)**2)
 
-      beta(i,j) = Xsi(i,j)*Xeta(i,j) + Ysi(i,j)*Yeta(i,j)
+      beta(i,j) = Xsi*Xeta + Ysi*Yeta
 
-      !-------------------Finding Thomas array values -----------------------------------------
+      !-------------------Finding Thomas array values -----------------------------------
       IF (srctrms .eqv. .FALSE.) THEN   
         bbx(i,j) = alpha(i,j)
         aax(i,j) = bbx(i,j) 
@@ -127,14 +130,14 @@ Sres = 0.0
       ddy(i,j) = (-2)*(alpha(i,j) + gama(i,j))
       ddx(i,j) = (-2)*(alpha(i,j) + gama(i,j))
 
-      !------------------------ Find innitial Residuals ---------------------------------------
+      !------------------------ Find innitial Residuals ---------------------------------
       IF (n == 1) THEN
         xResid(i,j) = bbx(i,j)*X(i-1,j)+ddx(i,j)*X(i,j)+aax(i,j)*X(i+1,j)-ccx(i,j)
         yResid(i,j) = bby(i,j)*Y(i-1,j)+ddy(i,j)*Y(i,j)+aay(i,j)*Y(i+1,j)-ccy(i,j)
       END IF
       END DO
 
-      !----------------- Setting Thomas array boundaries ----------------------------------------
+      !----------------- Setting Thomas array boundaries --------------------------------
       bbx(1,j) = 0
       bbx(imax,j) = 0
       ddx(1,j) = 1
@@ -173,24 +176,27 @@ Sres = 0.0
         YNext(i,j) = ccy(i,j)
       END DO
   
-      !----------------------- Find Residual and its sum of squares -----------------------------
+      !----------------------- Find Residual and its sum of squares ---------------------
       DO i = 2,imax-1
         xResidNext(i,j) = bbx(i,j)*X(i-1,j)+ddx(i,j)*X(i,j)+aax(i,j)*X(i+1,j)-ccx(i,j)
         yResidNext(i,j) = bby(i,j)*Y(i-1,j)+ddy(i,j)*Y(i,j)+aay(i,j)*Y(i+1,j)-ccy(i,j)
-            
-        Sres = Sres + (yResidNext(i,j) - yResid(i,j))**2 + (xResidNext(i,j) - xResid(i,j))**2
+        
+        xSres = xSres + (xResidNext(i,j) - xResid(i,j))**2
+        ySres = ySres + (yResidNext(i,j) - yResid(i,j))**2
       END DO
-
   END DO !---->  j loop
 
-  eRMSres = SQRT((Sres)/((imax-2)*(jmax-2)*2)) 
+  eRMSres = SQRT((xSres+ySres)/((imax-2)*(jmax-2)*2))
+
+  XeRMSres = SQRT((xSres)/((imax-2)*(jmax-2)))
+  YeRMSres = SQRT((ySres)/((imax-2)*(jmax-2)))
 
   IF (eRMSres <= cRMSr) THEN
     WRITE(6,*) n,eRMSres
     WRITE(6,'(A)') ' '
     WRITE(6,'(A,I3,A)') 'Met convergence criteria in ',n,' iterations'
-    WRITE(6,'(A)') 'RMS residual history written above'
-    WRITE(6,*) 'Grid wrote to:   ',outfile
+    WRITE(6,'(A)') 'RMS residual error history above: iteration,ErrTot,ErrX,ErrY'
+    WRITE(6,*) 'Grid wrote to:  ',outfile
     EXIT
   ELSE
     WRITE(6,*) n,eRMSres
@@ -200,49 +206,49 @@ Sres = 0.0
   Y = YNext
   xResid = xResidNext
   yResid = yResidNext
+
 END DO !---->  n loop (main)
-  !----------------------------------------------------------------------------------------------
-  !======================= END OF MAIN LOOP =====================================================
-  !----------------------------------------------------------------------------------------------
+  !--------------------------------------------------------------------------------------
+  !======================= END OF MAIN LOOP =============================================
+  !--------------------------------------------------------------------------------------
+IF (n >= nmax .AND. eRMSres > cRMSr) THEN
+  WRITE(6,'(A)') 'CONVERGENCE CRITERIA NOT MET! Grid wrote to:  ',outfile
+  WRITE(6,'(A)') 'RMS residual history written above'
+END IF
 
-  IF (n >= nmax .AND. eRMSres > cRMSr) THEN
-      WRITE(6,'(A)') 'CONVERGENCE CRITERIA NOT MET! Grid was still written.'
-      WRITE(6,'(A)') 'RMS residual history written above'
-  END IF
+DO j=1,jmax  
+  DO i=1,imax
+      Xeta = (X(i,j+1)-X(i,j-1))/2
+      Yeta = (Y(i,j+1)-Y(i,j-1))/2
+      Xsi = (X(i+1,j)-X(i-1,j))/2
+      Ysi = (Y(i+1,j)-Y(i-1,j))/2
+      IF (j == jmax) THEN
+          Xeta = (3*X(i,j)-4*X(i,j-1)+X(i,j-2))/2
+          Yeta = (3*Y(i,j)-4*Y(i,j-1)+Y(i,j-2))/2
+      END IF
+      IF (j == 1) THEN
+           Xeta = -1*(3*X(i,j)-4*X(i,j+1)+X(i,j+2))/2
+           Yeta = -1*(3*Y(i,j)-4*Y(i,j+1)+Y(i,j+2))/2
+      END IF
+      IF (i == imax) THEN
+           Xsi = (3*X(i,j)-4*X(i-1,j)+X(i-2,j))/2
+           Ysi = (3*Y(i,j)-4*Y(i-1,j)+Y(i-2,j))/2
+      END IF
+      IF (i == 1) THEN
+           Xsi = -1*(3*X(i,j)-4*X(i+1,j)+X(i+2,j))/2
+           Ysi = -1*(3*Y(i,j)-4*Y(i+1,j)+Y(i+2,j))/2
+      END IF
+      Ja(i,j) = Xsi*Yeta - Xeta*Ysi
+  END DO
+END DO
 
-! DO j=1,jmax  
-!   DO i=1,imax
-!       Xeta = (X(i,j+1)-X(i,j-1))/2
-!       Yeta = (Y(i,j+1)-Y(i,j-1))/2
-!       Xsi = (X(i+1,j)-X(i-1,j))/2
-!       Ysi = (Y(i+1,j)-Y(i-1,j))/2
-!       IF (j == jmax) THEN
-!           Xeta = (3*X(i,j)-4*X(i,j-1)+X(i,j-2))/2
-!           Yeta = (3*Y(i,j)-4*Y(i,j-1)+Y(i,j-2))/2
-!       END IF
-!       IF (j == 1) THEN
-!            Xeta = -1*(3*X(i,j)-4*X(i,j+1)+X(i,j+2))/2
-!            Yeta = -1*(3*Y(i,j)-4*Y(i,j+1)+Y(i,j+2))/2
-!       END IF
-!       IF (i == imax) THEN
-!            Xsi = (3*X(i,j)-4*X(i-1,j)+X(i-2,j))/2
-!            Ysi = (3*Y(i,j)-4*Y(i-1,j)+Y(i-2,j))/2
-!       END IF
-!       IF (i == 1) THEN
-!            Xsi = -1*(3*X(i,j)-4*X(i+1,j)+X(i+2,j))/2
-!            Ysi = -1*(3*Y(i,j)-4*Y(i+1,j)+Y(i+2,j))/2
-!       END IF
-!       Ja(i,j) = Xsi*Yeta - Xeta*Ysi
-!   END DO
-! END DO
-
-    !------------------------- Writing Results to file for TecPlot360ex----------------------------
+    !--------------------- Writing Results to file for TecPlot360ex----------------------
     OPEN(36,FILE = outfile, FORM = 'FORMATTED')
-    WRITE(36,'(A)') 'VARIABLES = "X" "Y"'
+    WRITE(36,'(A)') 'VARIABLES = "X" "Y" "J"'
     WRITE(36,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
     DO j=1,jmax
         DO i=1,imax
-            WRITE(36,*) X(i,j),Y(i,j) !,Ja(i,j)
+            WRITE(36,*) X(i,j),Y(i,j),Ja(i,j)
         END DO
     END DO
     CLOSE(36)

@@ -98,10 +98,10 @@ DO j = 1,nfil-1
     viy  = viy + dviy
     viz  = viz + dviz
 END DO 
-
+WRITE(6,*) '------------------------------------------------------------------'
 WRITE(6,*) 'Biot-Savart induced velocity at point P:'
 WRITE(6,*) '  Vix                       Viy                      Viz'
 WRITE(6,*) vix,viy,viz
-
+WRITE(6,*) '------------------------------------------------------------------'
 
 END PROGRAM induced_vel_at_P

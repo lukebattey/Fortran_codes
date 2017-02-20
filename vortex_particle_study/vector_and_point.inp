@@ -1,8 +1,8 @@
-5.000          	  ! Vorticity strength (constant for now)
+5.000          	  ! Vorticity strength (const)
 1.3				  !	Csig
 0.05 			  ! hRes
-2.0,1.0,0.0       ! Point P (induced vel location)
-100				  ! Number of particles per vorticity vector
-2				  ! Number of vorticity vector points  
-1.0,2.0,0.5		  ! All vorticity vector points Vvp (tip-to-tail used)
-0.0,0.0,0.0    
+1.0,0.5,0.0       ! Point P (ind. vel location)
+100				  ! # of particles per vector
+2				  ! # of vort. vector points  
+0.0,1.0,0.0		  ! All vort. vector points Vvp 
+0.0,0.0,0.0       

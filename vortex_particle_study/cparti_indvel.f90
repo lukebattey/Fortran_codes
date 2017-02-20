@@ -102,10 +102,10 @@ j = 1  !DO j = 1,nfil-1
 
     END DO
 !END DO
-
+      WRITE(6,*) '------------------------------------------------------------------'
       WRITE(6,*) 'Partical induced velocity at point P:'
       WRITE(6,*) '  Vix                       Viy                      Viz'
       WRITE(6,*) vix,viy,viz
-
+      WRITE(6,*) '------------------------------------------------------------------'
 
 END PROGRAM particle_induced_v

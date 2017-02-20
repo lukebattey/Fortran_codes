@@ -46,7 +46,7 @@ DO j=1,jmax
     END DO
 END DO
 
-WRITE(6,*) 'VARIABLES "Jac"'
+WRITE(6,*) 'VARIABLES = "X" "Y" "Jac"'
 WRITE(6,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
 DO j=1,jmax
     DO i=1,imax 
@@ -54,7 +54,7 @@ DO j=1,jmax
          WRITE(6,*) 'ALERT! BAD JACOBIAN SPOTTED! PROGRAM TERMINATED'
          STOP
          ELSE
-         WRITE(6,*) i,j,Ja(i,j)
+         WRITE(6,*) X(i,j),Y(i,j),Ja(i,j)
          END IF 
     END DO
 END DO 

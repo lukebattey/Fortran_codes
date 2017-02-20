@@ -17,7 +17,11 @@ IMPLICIT NONE
                     xint=1.008930411365
 
 contains
-    subroutine write_grid()
+    subroutine write_grid(a)
+
+        INTEGER, INTENT(IN) :: a
+
+        write(6,*) a
 
         !----------------- WRITE LOWER BOUNDARY (j=1) ---------------------
 

@@ -11,20 +11,20 @@ REAL(KIND=rDef),PARAMETER:: fx = -.8, &
                             cx = 1.80, &
                             t = 0.15, &
                             xint = 1.008930411365
-REAL(KIND=rDef):: cy,cxa,s,cxl
+REAL(KIND=rDef):: cy,cxa,s,cxl,cx1up,cx2up,fxup,exup,cy0,cyslope
 
 !----------------- Open files and set stipulations ---------------
 
-OPEN(16,FILE = '.dat', FORM = 'FORMATTED')
-OPEN(26,FILE = 'clust_alg_grid.dat', FORM = 'FORMATTED')
+! OPEN(16,FILE = '.dat', FORM = 'FORMATTED')
+! OPEN(26,FILE = 'clust_alg_grid.dat', FORM = 'FORMATTED')
 
 !---------- assign point indecies & boundary clustering ---------------------
 
 ei = 12+2
 eis = 19+2
 di = 33+2
-cxa = 1.6
-cxl = 2.0
+cxa = 1.5
+cxl = 2
 
 !----------------- WRITE LOWER BOUNDARY (j=1) ---------------------
 x(1,1) = fx
@@ -60,33 +60,66 @@ END DO
 
 DO i=di+1,imax
     x(i,1) = dx+((cx-dx)/(imax-di))*(i-di)
+    x(i,jmax) = dx+((cx-dx)/(imax-di))*(i-di)
     y(i,1) = 0
+    y(i,jmax) = 1.00
 END DO
 
-! !----------------- WRITE UPPER BOUNDARY (j=jmax) -------------------
+!----------------- WRITE UPPER BOUNDARY (j=jmax) -------------------
 
-! DO i=1,ci
-!     x(i,jmax) = fx+((cx-fx)/(imax-1))*(i-1)
-!     y(i,jmax) = 1.0
-! END DO
+exup = -.4
+X(1,jmax) = fx
+y(1,jmax) = 1.00
+X(ei,jmax) = exup
+y(ei,jmax) = 1.00
+x(di,jmax) = 1.00 
+y(di,jmax) = 1.00
 
-! !----------------- WRITE INTERIOR X POINTS  ------------------------
+cx1up = 1.5
 
-! DO j=2,jmax-1
-!   DO i=1,imax
-!         x(i,j) = x(i,1) + ((j*1.0-1.0)/(jmax*1.0-1.0))*(x(i,jmax)-x(i,1))
-!         y(i,j) = y(i,1) &
-!         -(((y(i,jmax)-y(i,1))/cy))*log(1+(exp(-cy)-1)*((j*1.0-1.0)/(jmax*1.0-1.0)))
+DO i = 2,ei-1
+    n = ei-i+1
+    
+    x(i,jmax) = x(ei,jmax)-((x(1,jmax)-x(ei,jmax))) &
+    *log(1+(exp(-cx1up)-1)*((n*1.0-1.0)/(ei-1.0)))/cx1up
+
+    y(i,jmax) = 1.000
+END DO
+
+DO i = ei+1,di-1
+    x(i,jmax) = x(ei,jmax) &
+      -(((x(di,jmax)-x(ei,jmax))/cxa))*log(1+(exp(-cxa)-1)*((i*1.0-ei)/(di*1.0-ei)))
+
+    y(i,jmax) = 1.000
+END DO 
+
+! UPPER AND LOWER BOUNDARY WRITE
+! DO j=1,jmax,jmax-1
+!     DO i=1,imax
+!      WRITE(6,*) X(i,j),Y(i,j)   
 !     END DO
 ! END DO
 
-! WRITE(F,'(A)') 'VARIABLES = "X" "Y" '
-! WRITE(F,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
-! DO j=1,jmax
-!   DO i=1,imax
-!         WRITE(F,*) x(i,j),y(i,j)
-!   END DO
-! END DO
+! !----------------- WRITE INTERIOR X POINTS  ------------------------
+cy0 = 2.00
+cyslope = 1.00
+
+DO j=2,jmax-1
+  DO i=1,imax
+        x(i,j) = x(i,1) + ((j*1.0-1.0)/(jmax*1.0-1.0))*(x(i,jmax)-x(i,1))
+        cy = cy0 - ABS(cyslope*x(i,j)) 
+        y(i,j) = y(i,1) &
+        -(((y(i,jmax)-y(i,1))/cy))*log(1+(exp(-cy)-1)*((j*1.0-1.0)/(jmax*1.0-1.0)))
+    END DO
+END DO
+
+WRITE(6,'(A)') 'VARIABLES = "X" "Y"'
+WRITE(6,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
+DO j=1,jmax
+  DO i=1,imax
+        WRITE(6,*) x(i,j),y(i,j)
+  END DO
+END DO
 
 END PROGRAM best_alg_grid
 

@@ -1,6 +1,5 @@
 PROGRAM alg_gridgen
     IMPLICIT NONE     
-!
 !----------------------------Variables -----------------------------
 INTEGER,PARAMETER::rDef=SELECTED_REAL_KIND(10)
 INTEGER,PARAMETER:: imax=41,jmax=19,fi=11,di=31,ci=41
@@ -99,9 +98,7 @@ WRITE(F,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
             WRITE(F,*) x(i,j),y(i,j),Ja(i,j)
         END DO
     END DO
-    
 END DO
-
 
 END PROGRAM alg_gridgen
 

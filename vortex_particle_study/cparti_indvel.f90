@@ -3,7 +3,7 @@ PROGRAM particle_induced_v
 
 INTEGER,PARAMETER::rDef=SELECTED_REAL_KIND(10)
 REAL(KIND=rDef),PARAMETER :: pi=4.0*ATAN(1.0),root2=2.0**0.5
-INTEGER :: nfil,j,NumPpv,n,nppv 
+INTEGER :: nfil,j,NumPpv,n,nppv,p
 REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:)::xm,ym,zm, &
                                           dxarr,dyarr,dzarr, &
                                           rsarr,rarr
@@ -13,7 +13,7 @@ REAL(KIND=rDef):: gama,xpoi,ypoi,zpoi, &
                   xSeg,ySeg,zSeg,px,py,pz,rxp,ryp,rzp,rpMag, &
                   dvix,dviy,dviz,gcm,vix,viy,viz, &
                   pxAlph,pyAlph,pzAlph,sigj,rho,G,K,cZeta,Zeta, &
-                  xpAlphRp,ypAlphRp,zpAlphRp,Csig,hRes
+                  xpAlphRp,ypAlphRp,zpAlphRp,Csig,hRes,xstep,xpoii
 
 OPEN(16,FILE = 'vector_and_point.inp', FORM = 'FORMATTED')
 
@@ -40,6 +40,20 @@ viz = 0.00
 !-------------------------------------------------------------------------
 !======================= MAIN LOOP STARTS HERE =========================== 
 !-------------------------------------------------------------------------
+
+WRITE(6,*) '------------------------------------------------------------------'
+      WRITE(6,*) 'Partical induced velocity at point P:'
+      WRITE(6,*) '  xp                       Vi                     '
+
+xstep = .1
+xpoii = .5
+DO p = 1,21
+
+vix = 0.00
+viy = 0.00
+viz = 0.00
+Xpoi = xpoii + (p-1)*xstep
+
 j = 1  !DO j = 1,nfil-1 
     xm1 = xm(j)
     ym1 = ym(j)
@@ -102,10 +116,8 @@ j = 1  !DO j = 1,nfil-1
 
     END DO
 !END DO
-      WRITE(6,*) '------------------------------------------------------------------'
-      WRITE(6,*) 'Partical induced velocity at point P:'
-      WRITE(6,*) '  Vix                       Viy                      Viz'
-      WRITE(6,*) vix,viy,viz
-      WRITE(6,*) '------------------------------------------------------------------'
+      WRITE(6,*) xpoi,viz
+ END DO 
+
 
 END PROGRAM particle_induced_v

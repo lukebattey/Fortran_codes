@@ -1,5 +1,18 @@
-clust_alg_grid.dat			! <-- Input grid file name (30 characters max please)
-elliptic_grid.dat			! <-- Output grid file name (also 30 characters max)
-TRUE						! <-- Use source terms phi and psi? (TRUE or FALSE)
-100							! <-- Max # of interations (if below criteria isn't met)
-1e-5						! <-- Convergence criteria (RMS error value)
+best_alg.dat				 ! <-- Input grid file name (30 char. max)
+BestGrid.dat   			     ! <-- Output grid file name (30 char. max)
+TRUE						 ! <-- Source terms phi and psi? (T or F)
+1000						 ! <-- Max # of interations (just in case)
+1e-5						 ! <-- Convergence criteria (RMS error)
+0.2 						 ! <-- Radius for Cluster Quality Check
+0.00,0.00					 ! <-- Origin of Qual. Check Circle
+							 
+							 ! (Checks quality of OUTPUT GRID, also make  
+                             !	sure the "!s" come after column 30)
+						 	
+Names of grids here (for convinience):
+unclust_alg_grid.dat
+clust_alg_grid.dat
+NoST_grid.dat
+ST_grid.dat
+best_alg.dat
+BestGrid.dat 

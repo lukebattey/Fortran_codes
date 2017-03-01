@@ -3,7 +3,7 @@ PROGRAM induced_vel_at_P
 
 INTEGER,PARAMETER::rDef=SELECTED_REAL_KIND(10)
 REAL(KIND=rDef),PARAMETER :: pi=4.0*ATAN(1.0),root2=2**0.5
-INTEGER :: nfil,j,NumPpv,p
+INTEGER :: nfil,j,NumPpv
 REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:)::xm,ym,zm, &
                                           dxarr,dyarr,dzarr, &
                                           rsarr,rarr
@@ -11,7 +11,7 @@ REAL(KIND=rDef):: gama,xp,yp,zp,r1s,r2s,rx1,rx2, &
                   dx1,dx2,dy1,dy2,dz1,dz2, &
                   rc,es,ls,rl,r1r2,r1xr2,r1yr2,r1zr2,rxrs, &
                   num,dem,dvix,dviy,dviz,gcm,vix,viy,viz,sigj, & 
-                  Csig,hRes,xpoii,xstep
+                  Csig,hRes
 
 OPEN(16,FILE = 'vector_and_point.inp', FORM = 'FORMATTED')
 
@@ -32,23 +32,13 @@ END DO
 !-------- Predetermine some parameters here ---------
 
 rc = 0.001   !--- Rc is read in as the source code shows
-es = 0.000001   !
+es = 0.000001
+
+vix = 0.00   !
+viy = 0.00   !--- innitializes induced vel BEFORE loop...
+viz = 0.00   !
 
 !--------------- Determine R vectors ------------------------
-
-WRITE(6,*) '------------------------------------------------------------------'
-WRITE(6,*) 'Biot-Savart induced velocity at point P:'
-WRITE(6,*) '  xp                       Vi                     '
-
-xstep = .1
-xpoii = .5
-DO p = 1,21
-
-vix = 0.00
-viy = 0.00
-viz = 0.00
-Xp = xpoii + (p-1)*xstep
-
 DO j = 1,nfil
     dxarr(j) = xp - xm(j)
     dyarr(j) = yp - ym(j)
@@ -108,12 +98,10 @@ DO j = 1,nfil-1
     viy  = viy + dviy
     viz  = viz + dviz
 END DO 
-
-WRITE(6,*) xp,viz
-
-END DO
-
-
-
+WRITE(6,*) '------------------------------------------------------------------'
+WRITE(6,*) 'Biot-Savart induced velocity at point P:'
+WRITE(6,*) '  Vix                       Viy                      Viz'
+WRITE(6,*) vix,viy,viz
+WRITE(6,*) '------------------------------------------------------------------'
 
 END PROGRAM induced_vel_at_P

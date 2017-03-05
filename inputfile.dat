@@ -1,0 +1,6 @@
+0.000625            ! delta t (dt)
+0.1                 ! delta y (dy)
+1.00E-6             ! nu (viscosity in m^2/s)
+1.00E+6             ! tau (to non-dim. time)
+0                   ! theta w/ (0 <= theta <= 1)
+51                  ! jmax

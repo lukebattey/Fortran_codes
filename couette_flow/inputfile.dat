@@ -1,0 +1,8 @@
+0.01	            ! dt*  (non-dim'd time step)
+51  				! jmax  (num points over L)
+0					! theta  (0 for explicit solver)
+1.00            	! L  (plate distance)
+1.00e-6				! dyn. viscosity  (to get time...)
+500				    ! nmax  (max # of iterations)
+
+The stability criterion: r = (dt*)(jmax^2) 

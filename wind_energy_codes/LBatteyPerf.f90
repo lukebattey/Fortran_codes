@@ -38,10 +38,17 @@ DO af=1,numaf
     OPEN(af*10,FILE = airfile(af), FORM = 'FORMATTED')
     READ(af*10,*) nAlM(af)
     ALLOCATE(alpha(nAlM(af),numaf),cl(nAlM(af),numaf),cd(nAlM(af),numaf))
+    CLOSE(af*10)
+END DO
+
+DO af=1,numaf
+    OPEN(af*10,FILE = airfile(af), FORM = 'FORMATTED')
+    READ(af*10,*) nAlM(af)
     DO nAl = 1,nAlM(af)
         READ(af*10,*) alpha(nAl,af),cl(nAl,af),cd(nAl,af) 
     END DO
 END DO
+
 omega = rpm*2.0*pi/60.0
 wSec = (R-rtcut*R)/imax
 nmax = 10      

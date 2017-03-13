@@ -1,16 +1,13 @@
 MODULE variables_cf 
     IMPLICIT NONE
 
-INTEGER,PARAMETER :: rDef=SELECTED_REAL_KIND(15)
+INTEGER,PARAMETER :: rDef=SELECTED_REAL_KIND(10)
 REAL(KIND=rDef),PARAMETER :: pi=4.0*ATAN(1.0),root2=2.0**0.5
-REAL(kind=rDef),ALLOCATABLE,DIMENSION(:) :: U,Unext
-REAL(kind=rDef),ALLOCATABLE,DIMENSION(:) :: Ynd,Uss
-                                                 
-REAL(kind=rDef) :: nu,dt,t,dy,theta,tau,L,c,t0,y0,RMSerr,errS,SerrS
+REAL(kind=rDef),ALLOCATABLE,DIMENSION(:) :: U,Unext,Ynd,Uss,Uex,a1,a2,a3,b
+CHARACTER(len=30) :: infile,outfile
+                                   
+REAL(kind=rDef) :: dt0,dy0,theta,L,r,t0,y0,seSS,RMSeSS,seEX,RMSeEX,ccRMSeSS
 
-INTEGER :: j,jmax,n,nmax
-
-!------ imin,jmin,imaxt,jmaxt  <-- these are just for testing
-
+INTEGER :: j,jmax,nmax
 
 END MODULE variables_cf

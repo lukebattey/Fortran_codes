@@ -6,11 +6,15 @@ REAL(KIND=rDef),PARAMETER :: pi = 4.0*ATAN(1.0)
 INTEGER :: vmax,vmin,vstep,V,B,i,af,imax,numaf,nAl,n,nmax
 CHARACTER(len=90),ALLOCATABLE,DIMENSION(:) :: airfile 
 REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:) :: rR,cR,tw,Cnor,Ctan,P
-REAL(KIND=rDef),ALLOCATABLE,DIMENSION(:,:) :: alpha,cl,cd
 INTEGER,ALLOCATABLE,DIMENSION(:) :: ai,nAlM 
 REAL(KIND=rDef):: R,rho,rpm,pitch,numjunk,omega,wSec,rtcut,lam,sig, &
                   F,A1,B1,phir,Lp,Dp,Psec,Vn,Vt,phi,beta,iAl,cli,cdi, &
                   a,aLast,ap,apLast
+
+TYPE JagArr
+    REAL(KIND=rDef),ALLOCATABLE :: el(:)
+endtype JagArr
+TYPE(JagArr),allocatable,dimension(:) :: alpha,cl,cd
 
 OPEN(16,FILE = 'lbatteyPerf.inp', FORM = 'FORMATTED')
 READ(16,*) R
@@ -34,19 +38,19 @@ DO i=1,imax
     READ(16,*) rR(i),cR(i),tw(i),ai(i)
 END DO
 
-DO af=1,numaf
-    OPEN(af*10,FILE = airfile(af), FORM = 'FORMATTED')
-    READ(af*10,*) nAlM(af)
-    ALLOCATE(alpha(nAlM(af),numaf),cl(nAlM(af),numaf),cd(nAlM(af),numaf))
-    CLOSE(af*10)
-END DO
+!--------------------READ Airfoil Files------------------------
+ALLOCATE(alpha(numaf), cl(numaf), cd(numaf))
 
 DO af=1,numaf
     OPEN(af*10,FILE = airfile(af), FORM = 'FORMATTED')
     READ(af*10,*) nAlM(af)
-    DO nAl = 1,nAlM(af)
-        READ(af*10,*) alpha(nAl,af),cl(nAl,af),cd(nAl,af) 
+    ALLOCATE(alpha(af)%el(nAlM(af)), cl(af)%el(nAlM(af)), cd(af)%el(nAlM(af)))
+
+    DO nAl =1,nAlM(af)
+        READ(af*10,*) alpha(af)%el(nAl), cl(af)%el(nAl), cd(af)%el(nAl)
     END DO
+
+    CLOSE(af*10)
 END DO
 
 omega = rpm*2.0*pi/60.0
@@ -74,13 +78,13 @@ DO V = vmin,vmax,vstep
             !--------- interpolate airfoil file for cl and cd ------------
             af = ai(i)
             DO nAl = 1,nAlM(af)-1
-                IF (alpha(nAl+1,af) > iAl .AND. alpha(nAl,af) < iAl) THEN
+                IF (alpha(af)%el(nAl+1) > iAl .AND. alpha(af)%el(nAl) < iAl) THEN
 
-                  cli = cl(nAl,af)+((cl(nAl+1,af)-cl(nAl,af))/ &
-                    (alpha(nAl+1,af)-alpha(nAl,af)))*(iAl-alpha(nAl,af))
+                  cli = cl(af)%el(nAl)+((cl(af)%el(nAl+1)-cl(af)%el(nAl))/ &
+                    (alpha(af)%el(nAl+1)-alpha(af)%el(nAl)))*(iAl-alpha(af)%el(nAl))
 
-                  cdi = cd(nAl,af)+((cd(nAl+1,af)-cd(nAl,af))/ &
-                    (alpha(nAl+1,af)-alpha(nAl,af)))*(iAl-alpha(nAl,af))
+                  cdi = cd(af)%el(nAl)+((cd(af)%el(nAl+1)-cd(af)%el(nAl))/ &
+                    (alpha(af)%el(nAl+1)-alpha(af)%el(nAl)))*(iAl-alpha(af)%el(nAl))
                   EXIT
                 END IF
             END DO
@@ -116,7 +120,6 @@ END DO
 !=========================================================================
 !------------------------- END OF MAIN LOOP ------------------------------
 !=========================================================================
-
 WRITE(6,*) 'Total Power Output at Wind Speeds:'
 WRITE(6,*) 'V (m/s)     P (kW)'
 DO v = vmin,vmax,vstep
@@ -128,4 +131,5 @@ WRITE(6,*) 'r/R     C_normal     C_tangential'
 DO i = 1,imax
     WRITE(6,'(F5.3,F12.5,F13.5)') rR(i),Cnor(i),Ctan(i)
 END DO
+
 END PROGRAM LBatteyPerf

@@ -79,13 +79,13 @@ DO V = vmin,vmax,vstep
             !--------- interpolate airfoil file for cl and cd ------------
             af = ai(i)
             DO nAl = 1,nAlM(af)-1
-                IF (alpha(nAl+1,af) > iAl .AND. alpha(nAl,af) < iAl) THEN
+                IF (alpha(af)%el(nAl+1) > iAl .AND. alpha(af)%el(nAl) < iAl) THEN
 
-                  cli = cl(nAl,af)+((cl(nAl+1,af)-cl(nAl,af))/ &
-                    (alpha(nAl+1,af)-alpha(nAl,af)))*(iAl-alpha(nAl,af))
+                  cli = cl(af)%el(nAl)+((cl(af)%el(nAl+1)-cl(af)%el(nAl))/ &
+                    (alpha(af)%el(nAl+1)-alpha(af)%el(nAl)))*(iAl-alpha(af)%el(nAl))
 
-                  cdi = cd(nAl,af)+((cd(nAl+1,af)-cd(nAl,af))/ &
-                    (alpha(nAl+1,af)-alpha(nAl,af)))*(iAl-alpha(nAl,af))
+                  cdi = cd(af)%el(nAl)+((cd(af)%el(nAl+1)-cd(af)%el(nAl))/ &
+                    (alpha(af)%el(nAl+1)-alpha(af)%el(nAl)))*(iAl-alpha(af)%el(nAl))
                   EXIT
                 END IF
             END DO
@@ -121,7 +121,6 @@ END DO
 !=========================================================================
 !------------------------- END OF MAIN LOOP ------------------------------
 !=========================================================================
-
 WRITE(6,*) 'Total Power Output at Wind Speeds:'
 WRITE(6,*) 'V (m/s)     P (kW)'
 DO v = vmin,vmax,vstep

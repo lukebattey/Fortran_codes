@@ -1,8 +1,9 @@
-0.01	            ! dt*  (non-dim'd time step)
+init_couette.dat	! Input File Name (initial conditions)
+fin_couette.dat		! Output File Name (output/restart state)
+0.0001              ! dt*  (non-dim'd time step)
 51  				! jmax  (num points over L)
-0					! theta  (0 for explicit solver)
-1.00            	! L  (plate distance)
-1.00e-6				! dyn. viscosity  (to get time...)
-500				    ! nmax  (max # of iterations)
+5e-7				! Steady-State RMS error convergence criteria
+0.5					! theta  (0 for expl. solver. > 0 for Combined Method A)
+150000			    ! nmax  (max # of iterations) 
 
-The stability criterion: r = (dt*)(jmax^2) 
+The stability criterion: r = (dt*)((jmax-1)^2)  should be < 0.5 for Theta = 0

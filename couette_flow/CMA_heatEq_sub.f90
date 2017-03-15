@@ -15,7 +15,6 @@ t0 = dt0*(n)
 DO j = 1,jmax
     Uex(j) = Ynd(j) + SIN(pi*Ynd(j))*EXP(-(pi**2)*t0)
 END DO 
-
 !------------------- Initial Values! ---------------------
 seSS   = 0.0    
 RMSeSS = 0.0  
@@ -30,7 +29,7 @@ a1(1)    = 0.0    !                           ^
 a1(jmax) = 0.0    !                           |
 a2(1)    = 1.0    ! THESE NEED TO COME AFTER (:) 
 a2(jmax) = 1.0    ! THE FULL ARRAY ASSIGNMENT ABOVE
-a3(1)    = 0.0    !
+a3(1)    = 0.0    !  (another bug I found..)
 a3(jmax) = 0.0    !
 
 b(1)    = 0.0
@@ -56,16 +55,7 @@ DO j = jmax-1,1,-1
 END DO 
 
 DO j = 2,jmax-1
-
     U(j) = b(j) !<-- Solution "stored" in b(j)...
-
-    seSS = seSS + (U(j) - Uss(j))**2
-    seEX = seEX + (U(j) - Uex(j))**2
 END DO 
-
-RMSeSS = SQRT(seSS/(jmax-2))
-RMSeEX = SQRT(seEX/(jmax-2))
-
-WRITE(6,*) n,RMSeSS,RMSeEX
 
 END SUBROUTINE CMA_heatEq_sub

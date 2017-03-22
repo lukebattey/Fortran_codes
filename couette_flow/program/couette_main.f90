@@ -7,6 +7,7 @@ USE variables_cf
 INTEGER :: n
 
 efreq = 1
+RMSeEXmax = -1.0
 
 OPEN(16,FILE = 'inputfile.dat', FORM = 'FORMATTED')
 READ(16,*) infile 

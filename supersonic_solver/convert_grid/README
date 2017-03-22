@@ -1,0 +1,5 @@
+This folder contains all the files used to take the supplied grid
+and convert it to a format that I am more familiar with.
+
+The new format is "Tecplot ASCII" and written with zones that clearly
+reflect the actual I and J directions.

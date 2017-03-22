@@ -7,7 +7,7 @@ REAL(kind=rDef),ALLOCATABLE,DIMENSION(:) :: U,Unext,Ynd,Uss,Uex,a1,a2,a3,b
 CHARACTER(len=30) :: infile,outfile
                                    
 REAL(kind=rDef) :: dt0,dy0,theta,L,r,t0,y0,seSS,RMSeSS,seEX, &
-                    RMSeEX,ccRMSeSS
+                   RMSeEX,ccRMSeSS,RMSeEXmax
 
 INTEGER :: j,jmax,nmax,efreq
 

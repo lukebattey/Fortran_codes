@@ -10,7 +10,6 @@ READ(16,*) outfile
 READ(16,*) dt0
 READ(16,*) jmax
 READ(16,*) theta
-READ(16,*) nmax
 
 ALLOCATE(Ynd(jmax),U(jmax))
 

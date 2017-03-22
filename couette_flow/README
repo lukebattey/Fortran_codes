@@ -1,0 +1,38 @@
+Hi Dr. Ranjan 
+
+The compiler I used is: 			GCC version 5.4.0
+The Makefile program I used is:		GNU Make 4.2.1
+
+
+
+I intended for this program to be easy to run, here are some guidelines:
+
+- The source code for the second project is found in the "program" folder.
+
+- There are 2 main programs which have a common input file and Makefile.
+
+- To build the code that writes the initial condition file, type: "make wi"
+
+- To build the Couette flow solver, type "make cf"
+
+- To write the innitial condition file, open "inputfile.dat" and set the filename
+  on line 1 (it writes this file), then set jmax and type "./write_initial.exe".
+
+- To run the Couette solver, set the initial-state file name, most likely the same 
+  as before, then set the final-state file name to what the solver should write. Set
+  all other parameters at this time as well, then type "./couette_main.exe".
+
+
+
+That sums it up, the error I would make while doing different jmax cases would be to 
+not "re-write" the initial condition file, so keep this in mind. But I'm also pretty 
+brain dead, so that might have something to do with it.
+
+Please let me know if you have any questions or concerns. 
+
+Thanks,
+
+Luke Battey
+lbattey3@gatech.edu
+(734) 276-0336
+

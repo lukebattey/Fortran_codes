@@ -1,0 +1,13 @@
+init_couette.dat	! Input File Name (initial conditions)
+fin_couette.dat		! Output File Name (output/restart state)
+0.5		            ! dt*  (non-dim'd time step)
+51		 			! jmax  (num points over L)
+5e-7				! Steady-State RMS error convergence criteria
+1.0					! theta  (0 for expl. solver. > 0 for Combined Method A)
+1000000  		    ! nmax  (max # of iterations) 
+10	 				! error write frequency (1 is default)
+
+The stability criterion: r = (dt*)((jmax-1)^2)  should be < 0.5 for Theta = 0
+
+Remember that if different j spacing is desired, write_initial.exe MUST be ran again
+because the input condition is changing..

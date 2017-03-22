@@ -1,0 +1,50 @@
+---------------------------------------------------------------------------
+README
+Author: R. Ranjan
+3/15/2017
+---------------------------------------------------------------------------
+
+1. This folder contains an example program to write out ASCII data in a format
+which can be read in Tecplot. The format allows to write out time varying 
+dataset.
+
+The folder structure is as follows:
+├── bin
+├── data
+│   └── fileIO.dat
+├── Makefile
+├── README
+└── src
+    ├── fileIO.F90
+    └── tecio.F90
+
+- The bin folder contains the executable program.
+
+- The data folder contains output of the program.
+
+- Makefile can be used to compile the program. Specify the compiler through 
+  modifying the values of FC, CC, CXX. The default compiler is set to Intel.
+
+- The src folder contains the source code, which comprises of two fortran 
+  files.
+
+2. To compile the program, do the following in this folder on a terminal after
+specifying the compiler type in the Makefile:
+
+$ make
+
+This will build the executable, which is saved in ./bin folder
+
+3. To run the program, do the following on the terminal
+
+$ ./bin/fileIO.x
+
+The program will print some messages on the terminal and will save the
+Tecplot file in the data folder
+
+4. To visualize the data do the following:
+
+$ tec360 data/fileIO.dat
+
+---------------------------------------------------------------------------
+

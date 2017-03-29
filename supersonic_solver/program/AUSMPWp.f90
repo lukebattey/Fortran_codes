@@ -8,26 +8,32 @@ IMPLICIT NONE
 DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:) :: UNtilL,UNtilR,VNtilL,VNtilR, &
                                                h0L,h0R,h0norm,Cs,Cave, &
                                                MtilL,MtilR,MLp,MRm,Pp,Pm,pL,pR, &
-                                               fitalL,fitalR
+                                               fitalL,fitalR,MbtpL,MbtmR
 
-DOUBLE PRECISION :: UNtilAve,ps,pmin,oneDP
+DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:,:) :: Ft1,Ft2,Ft3,Ft4                         
+
+DOUBLE PRECISION :: UNtilAve,ps,pmin,oneDP,wPw,Mave,T1sc,T2sc,T3sc,T4sc
 
 oneDP = 1.00 ! For the intrinsic sign function because it's dumb...
 
-!==========================================================================
-!================= F' vectors: Fiphj = F'(i+1/2,j)) =======================
-!==========================================================================
+!===================================================================================
+!================= F' vectors: Fiphj = F'(i+1/2,j)) ================================
+!===================================================================================
 
-ALLOCATE(UNtilL(imax-1,jmax-2),UNtilR(imax-1,jmax-2), &     
-         VNtilL(imax-1,jmax-2),VNtilR(imax-1,jmax-2), &
-         h0L(imax-1,jmax-2),h0R(imax-1,jmax-2),h0norm(imax-1,jmax-2), &
-         Cs(imax-1,jmax-2),Cave(imax-1,jmax-2), &
-         MtilL(imax-1,jmax-2),MtilR(imax-1,jmax-2), &
-         MLp(imax-1,jmax-2),MRm(imax-1,jmax-2), &
-         Pp(imax-1,jmax-2),Pm(imax-1,jmax-2),pL(imax-1,jmax-2),pR(imax-1,jmax-2), &
-         fitalL(imax-1,jmax-2),fitalR(imax-1,jmax-2))
-         
-! THE ALLOCATION IS DIFFERENT FOR THE G FLUXES!!!!! <-----
+ALLOCATE(UNtilL(imax-1,2:jmax-1),UNtilR(imax-1,2:jmax-1), &     
+         VNtilL(imax-1,2:jmax-1),VNtilR(imax-1,2:jmax-1), &
+         h0L(imax-1,2:jmax-1),h0R(imax-1,2:jmax-1),h0norm(imax-1,2:jmax-1), &
+         Cs(imax-1,2:jmax-1),Cave(imax-1,2:jmax-1), &
+         MtilL(imax-1,2:jmax-1),MtilR(imax-1,2:jmax-1), &
+         MLp(imax-1,2:jmax-1),MRm(imax-1,2:jmax-1), &
+         Pp(imax-1,2:jmax-1),Pm(imax-1,2:jmax-1), &
+         pL(imax-1,2:jmax-1),pR(imax-1,2:jmax-1), &
+         fitalL(imax-1,2:jmax-1),fitalR(imax-1,2:jmax-1), &
+         MbtpL(imax-1,2:jmax-1),MbtmR(imax-1,2:jmax-1))
+! THE ALLOCATION IS DIFFERENT FOR THE G FLUXES!!!!! <-----^^^
+
+ALLOCATE(Ft1(imax-1,2:jmax-1,4),Ft2(imax-1,2:jmax-1,4), &
+         Ft3(imax-1,2:jmax-1,4),Ft4(imax-1,2:jmax-1,4))
 
 DO j = 2,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR G FLUXES...
     DO i = 1,imax-1
@@ -36,25 +42,26 @@ DO j = 2,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR G FLUXES...
         ! velocities from left and right extrapolations. (Eq. 14)
 
         UNtilL(i,j) = ((siX(i,j)*ULF(i,j,2) / ULF(i,j,1)) + &   
-                      (siY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
-                      SQRT(siX(i,j)**2 + siY(i,j)**2)
+            (siY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
+        SQRT(siX(i,j)**2 + siY(i,j)**2)
 
         UNtilR(i,j) = ((siX(i+1,j)*URF(i,j,2) / URF(i,j,1)) + & 
-                      (siY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
-                      SQRT(siX(i+1,j)**2 + siY(i+1,j)**2)   
+            (siY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
+        SQRT(siX(i+1,j)**2 + siY(i+1,j)**2)   
 
         VNtilL(i,j) = ((etaX(i,j)*ULF(i,j,2) / ULF(i,j,1)) + & 
-                      (etaY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
-                      SQRT(etaX(i,j)**2 + etaY(i,j)**2)         
+            (etaY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
+        SQRT(etaX(i,j)**2 + etaY(i,j)**2)         
 
         VNtilR(i,j) = ((etaX(i+1,j)*URF(i,j,2) / URF(i,j,1)) + & 
-                      (etaY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
-                      SQRT(etaX(i+1,j)**2 + etaY(i+1,j)**2)
+            (etaY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
+        SQRT(etaX(i+1,j)**2 + etaY(i+1,j)**2)
 
 
         ! Next: stagnation enthalpy normal to the interface (Eq. 15)
         h0norm(i,j) = 0.5*(ULF(i,j,4)/ULF(i,j,1) - 0.5*VNtilL(i,j)**2 + &
-                           URF(i,j,4)/URF(i,j,1) - 0.5*VNtilR(i,j)**2)
+            URF(i,j,4)/URF(i,j,1) - 0.5*VNtilR(i,j)**2)
+
 
 
         ! Next: cell-averaged speed of sound Cave (Eq. 16)
@@ -107,24 +114,83 @@ END DO
 
 CALL get_pressure  ! This gets pressure for entire grid, no loop needed..
 
-! Next: The pressures from the left and right extrapolated state vectors
+! Next: The pressures from the left and right extrapolated state vectors (for Eq. 20)
 
 pL(:,:) = (gama-1.0)*(ULF(:,:,4) - (ULF(:,:,2)**2 + ULF(:,:,3)**2) / &
-          (2.0*ULF(:,:,1)))
+    (2.0*ULF(:,:,1)))
 
 pR(:,:) = (gama-1.0)*(ULF(:,:,4) - (ULF(:,:,2)**2 + ULF(:,:,3)**2) / &
-          (2.0*ULF(:,:,1)))
+    (2.0*ULF(:,:,1)))
 
 
+
+! Next: pressure weighing "italic f" terms are found 
 DO j = 2,jmax-1    
     DO i = 1,imax-1   
 
-      ps = Pp(i,j)*pL(i,j) + Pm(i,j)*pR(i,j)
+        ps = Pp(i,j)*pL(i,j) + Pm(i,j)*pR(i,j)  !<-- Eq. 20 here
 
-      pmin = min(p(i,j-1), p(i,j+1), p(i+1,j-1), p(i+1,j+1))
-      
+        pmin = min(p(i,j-1), p(i,j+1), p(i+1,j-1), p(i+1,j+1))
+
+        ! The following IF statement is from e1
+        IF (ps <= 0)  THEN
+            fitalL(i,j) = 0.00
+            fitalR(i,j) = 0.00
+        ELSE
+            fitalL(i,j) = (pL(i,j)/ps - 1)*(min(1.0,(pmin/min(pL(i,j), pR(i,j))))**2)
+            fitalR(i,j) = (pR(i,j)/ps - 1)*(min(1.0,(pmin/min(pL(i,j), pR(i,j))))**2)
+        END IF
+
+        ! Omega parameter from the pressure weighing terms (below Eq. 21)
+        wPw = 1.0 - (min((pL(i,j)/pR(i,j)), (pR(i,j)/pL(i,j)) ))**3
+
+        Mave = MLp(i,j) + MRm(i,j)
+
+        IF (Mave >= 0.00) THEN
+            MbtpL(i,j) = MLp(i,j) + MRm(i,j)*((1.0-wPw)*(1.0+fitalR(i,j))-fitalL(i,j))
+            MbtmR(i,j) = MRm(i,j)*wPw*(1+fitalR(i,j))
+        ELSE
+            MbtpL(i,j) = MLp(i,j)*wPw*(1+fitalL(i,j))
+            MbtmR(i,j) = MRm(i,j) + MLp(i,j)*((1.0-wPw)*(1.0+fitalL(i,j))-fitalR(i,j))
+        END IF
+
     END DO
 END DO
+
+
+!--------------------------------------------------------------------------------------
+!=================== ACTUALLY FINDING THE F FLUX's (Eq. 23) ===========================
+!--------------------------------------------------------------------------------------
+
+DO j = 2,jmax-1    
+    DO i = 1,imax-1
+
+        T1sc = MbtpL(i,j)*Cave(i,j)*SQRT(siX(i,j)**2 + siY(i,j)**2) / Ja(i,j)
+
+        T2sc = MbtmR(i,j)*Cave(i,j)*SQRT(siX(i+1,j)**2 + siY(i+1,j)**2) / Ja(i+1,j)
+
+        T3sc = Pp(i,j) / Ja(i,j)
+
+        T4sc = Pm(i,j) / Ja(i+1,j)
+
+        
+        Fpr(i,j,1) = T1sc*ULF(i,j,1) + T2sc*URF(i,j,1) 
+
+        Fpr(i,j,2) = T1sc*ULF(i,j,2) + T2sc*URF(i,j,2) + &
+                     T3sc*six(i,j)*pL(i,j) + T4sc*six(i+1,j)*pR(i,j) 
+        
+        Fpr(i,j,3) = T1sc*ULF(i,j,3) + T2sc*URF(i,j,3) + &
+                     T3sc*siY(i,j)*pL(i,j) + T4sc*siY(i+1,j)*pR(i,j)  
+        
+        Fpr(i,j,4) = T1sc*(ULF(i,j,4)+pL(i,j)) + T2sc*(URF(i,j,4)+pR(i,j))
+
+    END DO
+END DO
+
+
+DEALLOCATE(UNtilL,UNtilR,VNtilL,VNtilR,h0L,h0R,h0norm,Cs,Cave, &
+         MtilL,MtilR,MLp,MRm,Pp,Pm,pL,pR,fitalL,fitalR,MbtpL,MbtmR)
+DEALLOCATE(Ft1,Ft2,Ft3,Ft4)
 
 
 END SUBROUTINE AUSMPWp

@@ -48,7 +48,7 @@ IF (order == 1) THEN
 DO n = 1,1
     CALL extr_Ustate_o1
 
- !   CALL AUSMPWp
+    CALL AUSMPWp
 
 END DO 
 

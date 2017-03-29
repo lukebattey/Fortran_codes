@@ -1,14 +1,18 @@
 SUBROUTINE AUSMPWp
 
 USE variables_ss
+USE get_misc
 
 IMPLICIT NONE
 
 DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:) :: UNtilL,UNtilR,VNtilL,VNtilR, &
                                                h0L,h0R,h0norm,Cs,Cave, &
-                                               MtilL,MtilR,MLp,MRm,Pp,Pm
+                                               MtilL,MtilR,MLp,MRm,Pp,Pm,pL,pR, &
+                                               fitalL,fitalR
 
-DOUBLE PRECISION :: UNtilAve
+DOUBLE PRECISION :: UNtilAve,ps,pmin,oneDP
+
+oneDP = 1.00 ! For the intrinsic sign function because it's dumb...
 
 !==========================================================================
 !================= F' vectors: Fiphj = F'(i+1/2,j)) =======================
@@ -19,7 +23,9 @@ ALLOCATE(UNtilL(imax-1,jmax-2),UNtilR(imax-1,jmax-2), &
          h0L(imax-1,jmax-2),h0R(imax-1,jmax-2),h0norm(imax-1,jmax-2), &
          Cs(imax-1,jmax-2),Cave(imax-1,jmax-2), &
          MtilL(imax-1,jmax-2),MtilR(imax-1,jmax-2), &
-         MLp(imax-1,jmax-2),MRm(imax-1,jmax-2))
+         MLp(imax-1,jmax-2),MRm(imax-1,jmax-2), &
+         Pp(imax-1,jmax-2),Pm(imax-1,jmax-2),pL(imax-1,jmax-2),pR(imax-1,jmax-2), &
+         fitalL(imax-1,jmax-2),fitalR(imax-1,jmax-2))
          
 ! THE ALLOCATION IS DIFFERENT FOR THE G FLUXES!!!!! <-----
 
@@ -85,19 +91,40 @@ DO j = 2,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR G FLUXES...
 
         ! Next: split Pressures Pp and Pm (plus and minus, Eqs. 18b and 19b)
         IF (ABS(MtilL(i,j)) <= 1.0) THEN
-            Pp(i,j) = 1.0
-        ELSE                                                !(18b)
-            Pp(i,j) = 1.0
+            Pp(i,j) = 0.25*((MtilL(i,j) + 1.0)**2)*(2.0 - MtilL(i,j))
+        ELSE                                                       !(18b)
+            Pp(i,j) = 0.5*(1.0 + sign(oneDP,MtilL(i,j)))
         END IF
         !--------------------------------------------------
         IF (ABS(MtilR(i,j)) <= 1.0) THEN
-            Pm(i,j) = 1.0
+            Pm(i,j) = 0.25*((MtilR(i,j) - 1.0)**2)*(2 + MtilR(i,j))
         ELSE                                                !(19b)
-            Pm(i,j) = 1.0
+            Pm(i,j) = 0.5*(1.0 - sign(oneDP,MtilR(i,j)))
         END IF       
 
-
     END DO 
+END DO      
+
+CALL get_pressure  ! This gets pressure for entire grid, no loop needed..
+
+! Next: The pressures from the left and right extrapolated state vectors
+
+pL(:,:) = (gama-1.0)*(ULF(:,:,4) - (ULF(:,:,2)**2 + ULF(:,:,3)**2) / &
+          (2.0*ULF(:,:,1)))
+
+pR(:,:) = (gama-1.0)*(ULF(:,:,4) - (ULF(:,:,2)**2 + ULF(:,:,3)**2) / &
+          (2.0*ULF(:,:,1)))
+
+
+DO j = 2,jmax-1    
+    DO i = 1,imax-1   
+
+      ps = Pp(i,j)*pL(i,j) + Pm(i,j)*pR(i,j)
+
+      pmin = min(p(i,j-1), p(i,j+1), p(i+1,j-1), p(i+1,j+1))
+      
+    END DO
 END DO
+
 
 END SUBROUTINE AUSMPWp

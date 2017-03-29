@@ -69,6 +69,15 @@ END SUBROUTINE get_dt
 
 
 
+!=================== Pressure! ======================================
+! Finds the pressure (p) whenever called for the whole grid.
+
+SUBROUTINE get_pressure
+    p(:,:) = (gama-1.0)*(Ust(:,:,4) - (Ust(:,:,2)**2 + Ust(:,:,3)**2) / &
+             (2.0*Ust(:,:,1)))
+END SUBROUTINE get_pressure
+
+
 
 
 

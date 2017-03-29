@@ -23,8 +23,9 @@ CALL grid_read_metrics
 
 !======== SET INITIAL CONDITIONS AND BCs ====================
 ALLOCATE(Util(imax,jmax),Vtil(imax,jmax), &
-         del2(imax),del3(imax),deln1(imax),deln2(imax), &
          h0(imax,jmax))
+
+ALLOCATE(del2(imax),del3(imax),deln1(imax),deln2(imax)) 
 
 ALLOCATE(URG(imax-2,jmax-1,4),ULG(imax-2,jmax-1,4), &
          URF(imax-1,jmax-2,4),ULF(imax-1,jmax-2,4), &
@@ -39,10 +40,20 @@ CALL outflow_BC
 CALL lower_BC
 CALL upper_BC
 
+
+
+!======= Numerical Scheme ===================================
+
 IF (order == 1) THEN
+DO n = 1,1
     CALL extr_Ustate_o1
+
+ !   CALL AUSMPWp
+
+END DO 
+
 ELSE IF (order == 2) THEN
-    WRITE(6,*) 'UNDER CONSTRUCTION QUITTING'
+    WRITE(6,*) 'UNDER CONSTRUCTION, QUITTING..'
     STOP
 ELSE 
     WRITE(6,*) '1st or 2nd ORDER ONLY PLEASE!'

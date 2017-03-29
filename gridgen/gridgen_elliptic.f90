@@ -206,7 +206,7 @@ IF (n >= nmax) THEN  !.AND. eRMS > cRMS
 END IF
 
 DO j=1,jmax  
-  DO i=1,imax
+  DO i=1,imax 
     Xeta = (X(i,j+1)-X(i,j-1))/2
     Yeta = (Y(i,j+1)-Y(i,j-1))/2
     Xsi = (X(i+1,j)-X(i-1,j))/2

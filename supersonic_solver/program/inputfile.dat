@@ -3,5 +3,8 @@ init_state_dia.dat		! Output File Name (output/restart state)
 1.0						! Inflow velocity (u)
 4.0						! density (rho)
 1.4						! Gas constant (gama). Pressure = 1/gama
+0.8						! CFL number (user specified...)
+1						! Order of scheme (1 or 2)
+F  						! Use Flux Limiters
 5e-7					! Steady-State RMS error convergence criteria
 1000000  		    	! nmax  (max # of iterations) 

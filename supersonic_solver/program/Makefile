@@ -1,15 +1,29 @@
-ss: variables_ss.o grid_read_metrics.o init_L_BC.o s_sonic_main.o
-	gfortran -o s_sonic_main.exe variables_ss.o grid_read_metrics.o \
-	init_L_BC.o s_sonic_main.o 
+ss: variables_ss.o get_misc.o grid_read_metrics.o init_cond.o \
+	boundary_conds.o extr_Ustate_o1.o AUSMPWp.o s_sonic_main.o
+	gfortran -o s_sonic_main.exe variables_ss.o get_misc.o \
+	grid_read_metrics.o init_cond.o boundary_conds.o extr_Ustate_o1.o \
+	AUSMPWp.o s_sonic_main.o 
 
 s_sonic_main.o: s_sonic_main.f90 variables_ss.o
 	gfortran -c s_sonic_main.f90
 
-init_L_BC.o: init_L_BC.f90 variables_ss.o
-	gfortran -c init_L_BC.f90
+AUSMPWp.o: AUSMPWp.f90 variables_ss.o
+	gfortran -c AUSMPWp.f90
+
+extr_Ustate_o1.o: extr_Ustate_o1.f90 variables_ss.o
+	gfortran -c extr_Ustate_o1.f90
+
+boundary_conds.o: boundary_conds.f90 variables_ss.o
+	gfortran -c boundary_conds.f90
+
+init_cond.o: init_cond.f90 variables_ss.o
+	gfortran -c init_cond.f90
 
 grid_read_metrics.o: grid_read_metrics.f90 variables_ss.o
 	gfortran -c grid_read_metrics.f90
+
+get_misc.o: get_misc.f90 variables_ss.o
+	gfortran -c get_misc.f90
 
 variables_ss.o: variables_ss.f90
 	gfortran -c variables_ss.f90

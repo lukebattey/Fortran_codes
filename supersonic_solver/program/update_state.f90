@@ -13,9 +13,9 @@ DO j = 2,jmax-1
                     (Fpr(i,j,:) - Fpr(i-1,j,:)) + &
                     (Gpr(i,j,:) - Fpr(i,j-1,:)))
 
+    Ust(i,j,:) = UstNEW(i,j,:)
+
     END DO
 END DO
-
-Ust(:,:,:) = UstNEW(:,:,:)
 
 END SUBROUTINE update_state

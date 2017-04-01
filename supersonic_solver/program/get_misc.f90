@@ -52,7 +52,7 @@ SUBROUTINE get_dt
     ci(:,:) = SQRT(2*h0(:,:)*(gama-1)/(gama+1))
 
     csqrt(:,:) = ci(:,:)*SQRT(siX(:,:)**2 + siY(:,:)**2 + etaX(:,:)**2 + etaY(:,:)**2 &
-                              + 2*ABS(siX(:,:)*etaX(:,:) + siY(:,:)*etaY(:,:)))
+                              + 2.0*ABS(siX(:,:)*etaX(:,:) + siY(:,:)*etaY(:,:)))
 
     dti(:,:) = CFL / (ABS(Util(:,:)) + ABS(Vtil(:,:)) + csqrt(:,:))
 

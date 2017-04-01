@@ -41,21 +41,21 @@ DO j = 1,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR F FLUXES...
         ! The following 4 variables: normalized contravarient
         ! velocities from left and right extrapolations. (Eq. 14)
 
-        UNtilL(i,j) = ((etaX(i,j)*ULG(i,j,2) / ULG(i,j,1)) + &   
-            (etaY(i,j)*ULG(i,j,3) / ULG(i,j,1))) / &
-        SQRT(etaX(i,j)**2 + etaY(i,j)**2)
+        UNtilL(i,j) = ((siX(i,j)*ULG(i,j,2) / ULG(i,j,1)) + &   
+                      (siY(i,j)*ULG(i,j,3) / ULG(i,j,1))) / &
+                      SQRT(siX(i,j)**2 + siY(i,j)**2)
 
-        UNtilR(i,j) = ((etaX(i,j+1)*URG(i,j,2) / URG(i,j,1)) + & 
-            (etaY(i,j+1)*URG(i,j,3) / URG(i,j,1))) / &
-        SQRT(etaX(i,j+1)**2 + etaY(i,j+1)**2)   
+        UNtilR(i,j) = ((siX(i+1,j)*URG(i,j,2) / URG(i,j,1)) + & 
+                      (siY(i+1,j)*URG(i,j,3) / URG(i,j,1))) / &
+                      SQRT(siX(i,j+1)**2 + siY(i,j+1)**2)   
 
         VNtilL(i,j) = ((etaX(i,j)*ULG(i,j,2) / ULG(i,j,1)) + & 
-            (etaY(i,j)*ULG(i,j,3) / ULG(i,j,1))) / &
-        SQRT(etaX(i,j)**2 + etaY(i,j)**2)         
+                      (etaY(i,j)*ULG(i,j,3) / ULG(i,j,1))) / &
+                      SQRT(etaX(i,j)**2 + etaY(i,j)**2)         
 
-        VNtilR(i,j) = ((etaX(i,j+1)*URG(i,j,2) / URG(i,j,1)) + & 
-            (etaY(i,j+1)*URG(i,j,3) / URG(i,j,1))) / &
-        SQRT(etaX(i,j+1)**2 + etaY(i,j+1)**2)
+        VNtilR(i,j) = ((etaX(i+1,j)*URG(i,j,2) / URG(i,j,1)) + & 
+                      (etaY(i+1,j)*URG(i,j,3) / URG(i,j,1))) / &
+                      SQRT(etaX(i,j+1)**2 + etaY(i,j+1)**2)
 
 
         ! Next: stagnation enthalpy normal to the interface (Eq. 15)
@@ -121,7 +121,6 @@ pL(:,:) = (gama-1.0)*(ULG(:,:,4) - (ULG(:,:,2)**2 + ULG(:,:,3)**2) / &
 
 pR(:,:) = (gama-1.0)*(ULG(:,:,4) - (ULG(:,:,2)**2 + ULG(:,:,3)**2) / &
     (2.0*ULG(:,:,1)))
-
 
 
 ! Next: pressure weighing "italic f" terms are found 

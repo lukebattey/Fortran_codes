@@ -42,7 +42,6 @@ DO n = 1,2
     CALL get_primitive
     CALL get_dt
     
-    
     CALL lower_BC
     CALL upper_BC
     CALL outflow_BC

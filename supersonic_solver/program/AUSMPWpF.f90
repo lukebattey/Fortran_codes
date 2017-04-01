@@ -42,20 +42,20 @@ DO j = 2,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR G FLUXES...
         ! velocities from left and right extrapolations. (Eq. 14)
 
         UNtilL(i,j) = ((siX(i,j)*ULF(i,j,2) / ULF(i,j,1)) + &   
-            (siY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
-        SQRT(siX(i,j)**2 + siY(i,j)**2)
+                      (siY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
+                      SQRT(siX(i,j)**2 + siY(i,j)**2)
 
         UNtilR(i,j) = ((siX(i+1,j)*URF(i,j,2) / URF(i,j,1)) + & 
-            (siY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
-        SQRT(siX(i+1,j)**2 + siY(i+1,j)**2)   
+                      (siY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
+                      SQRT(siX(i+1,j)**2 + siY(i+1,j)**2)   
 
         VNtilL(i,j) = ((etaX(i,j)*ULF(i,j,2) / ULF(i,j,1)) + & 
-            (etaY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
-        SQRT(etaX(i,j)**2 + etaY(i,j)**2)         
+                      (etaY(i,j)*ULF(i,j,3) / ULF(i,j,1))) / &
+                      SQRT(etaX(i,j)**2 + etaY(i,j)**2)         
 
         VNtilR(i,j) = ((etaX(i+1,j)*URF(i,j,2) / URF(i,j,1)) + & 
-            (etaY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
-        SQRT(etaX(i+1,j)**2 + etaY(i+1,j)**2)
+                      (etaY(i+1,j)*URF(i,j,3) / URF(i,j,1))) / &
+                      SQRT(etaX(i+1,j)**2 + etaY(i+1,j)**2)
 
 
         ! Next: stagnation enthalpy normal to the interface (Eq. 15)
@@ -143,7 +143,7 @@ DO j = 2,jmax-1
             
             NaNcheck = fitalR(i,j) 
             IF (NaNcheck /= NaNcheck) THEN
-                WRITE(6,*) "FUUUUCK",i,j,pL(i,j),pR(i,j)
+                WRITE(6,*) "FUUUUCK",i,j,Ust(i,j,2),n
             END IF
 
         END IF
@@ -198,7 +198,7 @@ DO j = 2,jmax-1
             NaNcheck = pL(i,j)*pR(i,j)
 
             IF (NaNcheck /= NaNcheck) THEN
-             WRITE(6,*) "NaN, THATS BAD! at:",i,j
+            !WRITE(6,*) "NaN, THATS BAD! at:",i,j
             !STOP
             END IF
         

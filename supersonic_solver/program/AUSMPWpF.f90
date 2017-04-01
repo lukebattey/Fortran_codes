@@ -140,15 +140,9 @@ DO j = 2,jmax-1
         ELSE
             fitalL(i,j) = (pL(i,j)/ps - 1)*(min(1.0,(pmin/min(pL(i,j), pR(i,j))))**2)
             fitalR(i,j) = (pR(i,j)/ps - 1)*(min(1.0,(pmin/min(pL(i,j), pR(i,j))))**2)
-            
-            NaNcheck = fitalR(i,j) 
-            IF (NaNcheck /= NaNcheck) THEN
-                WRITE(6,*) "FUUUUCK",i,j,Ust(i,j,2),n
-            END IF
-
         END IF
 
-
+        
 
         ! Omega parameter from the pressure weighing terms (below Eq. 21)
         wPw = 1.0 - (min((pL(i,j)/pR(i,j)), (pR(i,j)/pL(i,j)) ))**3

@@ -37,7 +37,7 @@ CALL init_cond
 !======= Numerical Scheme ===================================
 
 IF (order == 1) THEN
-DO n = 1,2
+DO n = 1,1
 
     CALL get_primitive
     CALL get_dt

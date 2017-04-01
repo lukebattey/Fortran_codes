@@ -10,12 +10,19 @@ CONTAINS
 ! finds the inflow "wall" values (i = imax). Called before each time step!
 
 SUBROUTINE inflow_BC
+    i = 1
+        rho(i,:)   =  rho(i-1,:)
+        u(i,:)     =  u(i-1,:)
+        v(i,:)     =  v(i-1,:)  
+        p(i,:)     =  p(i-1,:)
 
-   WRITE(6,*) '====================================   Attempted using inflow sub:'   
-   WRITE(6,*) '=== UNDER CONSTRUCTION, QUITTING ===    I might not '
-   WRITE(6,*) '====================================    even need it ever..'
+        
+
+   ! WRITE(6,*) '====================================   Attempted using inflow sub:'   
+   ! WRITE(6,*) '=== UNDER CONSTRUCTION, QUITTING ===    I might not '
+   ! WRITE(6,*) '====================================    even need it ever..'
     
-    STOP
+   !  STOP
 END SUBROUTINE inflow_BC
 
 

@@ -12,11 +12,11 @@ DO j = 2,jmax-1
     END DO
 END DO
 
-! get URG and ULG (G is i,j+1/2). "LEFT" IS "ABOVE" NOW 
+! get URG and ULG (G is i,j+1/2). "RIGHT" IS "ABOVE" NOW 
 DO j = 1,jmax-1
     DO i = 2,imax-1
-        URG(i,j,:) = Ust(i,j,:)    ! R is for "below"..
-        ULG(i,j,:) = Ust(i,j+1,:)  ! L is for "above"..
+        URG(i,j,:) = Ust(i,j+1,:)    ! R is for "above"..???? REALLY??
+        ULG(i,j,:) = Ust(i,j,:)  ! L is for "below"..
     END DO
 END DO
  

@@ -1,14 +1,21 @@
 ss: variables_ss.o get_misc.o grid_read_metrics.o init_cond.o \
-	boundary_conds.o extr_Ustate_o1.o AUSMPWp.o s_sonic_main.o
+	boundary_conds.o extr_Ustate_o1.o AUSMPWpF.o AUSMPWpG.o \
+	update_state.o s_sonic_main.o
 	gfortran -o s_sonic_main.exe variables_ss.o get_misc.o \
 	grid_read_metrics.o init_cond.o boundary_conds.o extr_Ustate_o1.o \
-	AUSMPWp.o s_sonic_main.o 
+	AUSMPWpF.o AUSMPWpG.o update_state.o s_sonic_main.o 
 
 s_sonic_main.o: s_sonic_main.f90 variables_ss.o
 	gfortran -c s_sonic_main.f90
 
-AUSMPWp.o: AUSMPWp.f90 variables_ss.o
-	gfortran -c AUSMPWp.f90
+update_state.o: update_state.f90 variables_ss.o
+	gfortran -c update_state.f90
+
+AUSMPWpG.o: AUSMPWpG.f90 variables_ss.o
+	gfortran -c AUSMPWpG.f90
+
+AUSMPWpF.o: AUSMPWpF.f90 variables_ss.o
+	gfortran -c AUSMPWpF.f90
 
 extr_Ustate_o1.o: extr_Ustate_o1.f90 variables_ss.o
 	gfortran -c extr_Ustate_o1.f90

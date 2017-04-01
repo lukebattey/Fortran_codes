@@ -6,9 +6,8 @@ IMPLICIT NONE
 
 ALLOCATE(u(imax,jmax),v(imax,jmax),p(imax,jmax),rho(imax,jmax))
 
-ALLOCATE(Ust(imax,jmax,4)) ! 4 to account for each component
-                           ! of the state-vector (Ust)
-
+ALLOCATE(Ust(imax,jmax,4), &  
+         UstNEW(imax,jmax,4)) 
 !============ SET INITIAL PRIMITIVE VARIABLES =======================
 
         u(:,:)   = ui

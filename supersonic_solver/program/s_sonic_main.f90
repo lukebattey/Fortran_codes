@@ -27,30 +27,35 @@ ALLOCATE(Util(imax,jmax),Vtil(imax,jmax), &
 
 ALLOCATE(del2(imax),del3(imax),deln1(imax),deln2(imax)) 
 
-ALLOCATE(URG(imax-2,jmax-1,4),ULG(imax-2,jmax-1,4), &
-         URF(imax-1,jmax-2,4),ULF(imax-1,jmax-2,4), &
-         Fpr(imax-1,jmax,4),Gpr(imax-1,jmax,4)) 
+ALLOCATE(URG(2:imax-1,jmax-1,4),ULG(2:imax-1,jmax-1,4), &
+         URF(imax-1,2:jmax-1,4),ULF(imax-1,2:jmax-1,4), &
+         Fpr(imax-1,2:jmax-1,4),Gpr(2:imax-1,jmax-1,4))   
 
 CALL init_cond
-CALL get_dt !<---- Requires init_cond beforehand..
-
-CALL stag_enthalpy
-
-CALL outflow_BC
-CALL lower_BC
-CALL upper_BC
-
 
 
 !======= Numerical Scheme ===================================
 
 IF (order == 1) THEN
-DO n = 1,1
+DO n = 1,2
+
+    CALL get_primitive
+    CALL get_dt
+    
+    
+    CALL lower_BC
+    CALL upper_BC
+    CALL outflow_BC
+
     CALL extr_Ustate_o1
 
-    CALL AUSMPWp
+    CALL AUSMPWpF
+    CALL AUSMPWpG
+
+    CALL update_state
 
 END DO 
+
 
 ELSE IF (order == 2) THEN
     WRITE(6,*) 'UNDER CONSTRUCTION, QUITTING..'
@@ -59,8 +64,6 @@ ELSE
     WRITE(6,*) '1st or 2nd ORDER ONLY PLEASE!'
     STOP
 END IF
-
-
 
 CALL write_sol
 

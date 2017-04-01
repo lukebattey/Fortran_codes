@@ -13,17 +13,17 @@ DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:) :: del2,del3,deln1,deln2
 
 DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:,:) :: Ust,Fpr,Gpr, &
                                                  URG,ULG, &
-                                                 URF,ULF
+                                                 URF,ULF,UstNEW
                                                 
 CHARACTER(len=30) :: infile,outfile
 CHARACTER(len=8) :: junk8 
                                    
 DOUBLE PRECISION :: dt0,dy0,theta,L,r,t0,y0,seSS,RMSeSS,seEX, &
                    RMSeEX,ccRMSeSS,RMSeEXmax,ui,rhoi,gama,Eti, &
-                   CFL,dt
+                   CFL,dt,NaNcheck
 
 LOGICAL :: fluxlim
 
-INTEGER :: i,j,jmax,imax,n,order
+INTEGER :: i,j,jmax,imax,n,order,stind
 
 END MODULE variables_ss

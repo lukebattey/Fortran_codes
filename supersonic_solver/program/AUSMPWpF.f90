@@ -1,4 +1,4 @@
-SUBROUTINE AUSMPWp
+SUBROUTINE AUSMPWpF
 
 USE variables_ss
 USE get_misc
@@ -62,7 +62,10 @@ DO j = 2,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR G FLUXES...
         h0norm(i,j) = 0.5*(ULF(i,j,4)/ULF(i,j,1) - 0.5*VNtilL(i,j)**2 + &
             URF(i,j,4)/URF(i,j,1) - 0.5*VNtilR(i,j)**2)
 
-
+        IF (h0norm(i,j) <= 0.00) THEN
+            WRITE(6,*) h0norm(i,j),' <--- h0norm < 0.. Quitting'
+            STOP
+        END IF 
 
         ! Next: cell-averaged speed of sound Cave (Eq. 16)
         Cs(i,j) = SQRT(2.0*h0norm(i,j)*(gama-1) / (gama + 1))
@@ -119,10 +122,8 @@ CALL get_pressure  ! This gets pressure for entire grid, no loop needed..
 pL(:,:) = (gama-1.0)*(ULF(:,:,4) - (ULF(:,:,2)**2 + ULF(:,:,3)**2) / &
     (2.0*ULF(:,:,1)))
 
-pR(:,:) = (gama-1.0)*(ULF(:,:,4) - (ULF(:,:,2)**2 + ULF(:,:,3)**2) / &
-    (2.0*ULF(:,:,1)))
-
-
+pR(:,:) = (gama-1.0)*(URF(:,:,4) - (URF(:,:,2)**2 + URF(:,:,3)**2) / &
+    (2.0*URF(:,:,1)))
 
 ! Next: pressure weighing "italic f" terms are found 
 DO j = 2,jmax-1    
@@ -132,14 +133,22 @@ DO j = 2,jmax-1
 
         pmin = min(p(i,j-1), p(i,j+1), p(i+1,j-1), p(i+1,j+1))
 
-        ! The following IF statement is from e1
+        ! The following IF statement is from eq. 21
         IF (ps <= 0)  THEN
             fitalL(i,j) = 0.00
             fitalR(i,j) = 0.00
         ELSE
             fitalL(i,j) = (pL(i,j)/ps - 1)*(min(1.0,(pmin/min(pL(i,j), pR(i,j))))**2)
             fitalR(i,j) = (pR(i,j)/ps - 1)*(min(1.0,(pmin/min(pL(i,j), pR(i,j))))**2)
+            
+            NaNcheck = fitalR(i,j) 
+            IF (NaNcheck /= NaNcheck) THEN
+                WRITE(6,*) "FUUUUCK",i,j,pL(i,j),pR(i,j)
+            END IF
+
         END IF
+
+
 
         ! Omega parameter from the pressure weighing terms (below Eq. 21)
         wPw = 1.0 - (min((pL(i,j)/pR(i,j)), (pR(i,j)/pL(i,j)) ))**3
@@ -173,7 +182,6 @@ DO j = 2,jmax-1
 
         T4sc = Pm(i,j) / Ja(i+1,j)
 
-        
         Fpr(i,j,1) = T1sc*ULF(i,j,1) + T2sc*URF(i,j,1) 
 
         Fpr(i,j,2) = T1sc*ULF(i,j,2) + T2sc*URF(i,j,2) + &
@@ -184,6 +192,18 @@ DO j = 2,jmax-1
         
         Fpr(i,j,4) = T1sc*(ULF(i,j,4)+pL(i,j)) + T2sc*(URF(i,j,4)+pR(i,j))
 
+
+        DO stind = 1,1
+        
+            NaNcheck = pL(i,j)*pR(i,j)
+
+            IF (NaNcheck /= NaNcheck) THEN
+             WRITE(6,*) "NaN, THATS BAD! at:",i,j
+            !STOP
+            END IF
+        
+        END DO
+
     END DO
 END DO
 
@@ -193,4 +213,4 @@ DEALLOCATE(UNtilL,UNtilR,VNtilL,VNtilR,h0L,h0R,h0norm,Cs,Cave, &
 DEALLOCATE(Ft1,Ft2,Ft3,Ft4)
 
 
-END SUBROUTINE AUSMPWp
+END SUBROUTINE AUSMPWpF

@@ -42,6 +42,7 @@ END SUBROUTINE write_sol
 !This finds the time step to use as seen in eq 13 in the handout for Project #3
 
 SUBROUTINE get_dt
+    
     ALLOCATE(dti(imax,jmax),csqrt(imax,jmax),ci(imax,jmax)) ! Deallocates After..
     Util(:,:) = siX(:,:)*u(:,:) + siY(:,:)*v(:,:) 
     Vtil(:,:) = etaX(:,:)*u(:,:) + etaY(:,:)*v(:,:) 
@@ -53,7 +54,7 @@ SUBROUTINE get_dt
     csqrt(:,:) = ci(:,:)*SQRT(siX(:,:)**2 + siY(:,:)**2 + etaX(:,:)**2 + etaY(:,:)**2 &
                               + 2*ABS(siX(:,:)*etaX(:,:) + siY(:,:)*etaY(:,:)))
 
-    dti(:,:) = CFL / (Util(:,:) + Vtil(:,:) + csqrt(:,:))
+    dti(:,:) = CFL / (ABS(Util(:,:)) + ABS(Vtil(:,:)) + csqrt(:,:))
 
     dt = 999999.99 !initiallize to a large number...
     DO j = 1,jmax
@@ -79,6 +80,18 @@ END SUBROUTINE get_pressure
 
 
 
+!=================== primitive variables! ======================================
+! Finds the primitive variables (p,rho,u,v) whenever called for the whole grid.
+! no need for temperature right now...
+
+SUBROUTINE get_primitive
+    call get_pressure
+
+    rho(:,:) = Ust(:,:,1)
+    u(:,:)   = Ust(:,:,2) / Ust(:,:,1)
+    v(:,:)   = Ust(:,:,3) / Ust(:,:,1)
+
+END SUBROUTINE get_primitive
 
 
 END MODULE get_misc

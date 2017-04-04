@@ -20,7 +20,7 @@ CHARACTER(len=8) :: junk8
                                    
 DOUBLE PRECISION :: dt0,dy0,theta,L,r,t0,y0,seSS,RMSeSS,seEX, &
                    RMSeEX,ccRMSeSS,RMSeEXmax,ui,rhoi,gama,Eti, &
-                   CFL,dt,NaNcheck
+                   CFL,dt,NaNcheck,TempoRMS
 
 LOGICAL :: fluxlim
 

@@ -68,11 +68,13 @@ SUBROUTINE lower_BC
     Ust(:,1,4) = h0(:,1)*rho(:,1)
 
   ! CHECK stuff w/ this loop...
-    ! j = 1
-    !   DO i = 1,imax
-    !        ! WRITE(6,*) - 0.5*(u(i,j)**2 + v(i,j)**2)
-    !   END DO
+     TempoRMS = 0.00
+     j = 1
+       DO i = 1,imax
+            TempoRMS = TempoRMS + rho(i,j)**2
+       END DO
 
+       WRITE(6,*) SQRT(TempoRMS/(imax*1.0))
 
 END SUBROUTINE lower_BC
 

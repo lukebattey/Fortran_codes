@@ -191,6 +191,7 @@ DO j = 2,jmax-1
             NaNcheck = Fpr(i,j,stind)
             IF (NaNcheck /= NaNcheck) THEN
             WRITE(6,*) "F FLUX GONE BAD AT:",n,stind,i,j
+            STOP
             END IF
         END DO
 

@@ -16,6 +16,7 @@ READ(16,*) gama
 READ(16,*) CFL
 READ(16,*) order
 READ(16,*) fluxlim
+READ(16,*) nmax
 CLOSE(16) 
 
 !======== READ IN GRID, GET METRICS, AND JACOBIANS ==========
@@ -37,11 +38,12 @@ CALL init_cond
 !======= Numerical Scheme ===================================
 
 IF (order == 1) THEN
-DO n = 1,1
+DO n = 1,nmax
 
     CALL get_primitive
     CALL get_dt
     
+    CALL stag_enthalpy
     CALL lower_BC
     CALL upper_BC
     CALL outflow_BC

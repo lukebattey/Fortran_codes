@@ -168,13 +168,13 @@ END DO
 DO j = 2,jmax-1    
     DO i = 1,imax-1
 
-        T1sc = MbtpL(i,j)*Cave(i,j)*SQRT(siX(i,j)**2 + siY(i,j)**2) / Ja(i,j)
+        T1sc = MbtpL(i,j)*Cave(i,j)*SQRT(siX(i,j)**2 + siY(i,j)**2)*Ja(i,j)
 
-        T2sc = MbtmR(i,j)*Cave(i,j)*SQRT(siX(i+1,j)**2 + siY(i+1,j)**2) / Ja(i+1,j)
+        T2sc = MbtmR(i,j)*Cave(i,j)*SQRT(siX(i+1,j)**2 + siY(i+1,j)**2)*Ja(i+1,j)
 
-        T3sc = Pp(i,j) / Ja(i,j)
+        T3sc = Pp(i,j)*Ja(i,j)
 
-        T4sc = Pm(i,j) / Ja(i+1,j)
+        T4sc = Pm(i,j)*Ja(i+1,j)
 
         Fpr(i,j,1) = T1sc*ULF(i,j,1) + T2sc*URF(i,j,1) 
 
@@ -187,15 +187,11 @@ DO j = 2,jmax-1
         Fpr(i,j,4) = T1sc*(ULF(i,j,4)+pL(i,j)) + T2sc*(URF(i,j,4)+pR(i,j))
 
 
-        DO stind = 1,1
-        
-            NaNcheck = pL(i,j)*pR(i,j)
-
+        DO stind = 1,4
+            NaNcheck = Fpr(i,j,stind)
             IF (NaNcheck /= NaNcheck) THEN
-            !WRITE(6,*) "NaN, THATS BAD! at:",i,j
-            !STOP
+            WRITE(6,*) "F FLUX GONE BAD AT:",n,stind,i,j
             END IF
-        
         END DO
 
     END DO

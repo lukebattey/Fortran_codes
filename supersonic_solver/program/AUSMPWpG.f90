@@ -58,10 +58,10 @@ DO j = 1,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR F FLUXES...
                       SQRT(etaX(i,j+1)**2 + etaY(i,j+1)**2)
 
 
+
         ! Next: stagnation enthalpy normal to the interface (Eq. 15)
         h0norm(i,j) = 0.5*(ULG(i,j,4)/ULG(i,j,1) - 0.5*UNtilL(i,j)**2 + &
             URG(i,j,4)/URG(i,j,1) - 0.5*UNtilR(i,j)**2)
-
 
 
         ! Next: cell-averaged speed of sound, Cave (Eq. 16)
@@ -76,6 +76,10 @@ DO j = 1,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR F FLUXES...
             Cave(i,j) = Cs(i,j)**2 / MAX(cs(i,j),ABS(VNtilR(i,j)))
         END IF
 
+        ! NaNcheck = h0norm(i,j)
+        IF (ULG(i,j,4) < 0.00) THEN
+          WRITE(6,*) i,j,"WHAT?"
+        END IF
 
         ! Next: cell-face Mach numbers from L and R (Eq. 17) 
         MtilL(i,j) = VNtilL(i,j) / Cave(i,j)
@@ -164,13 +168,13 @@ END DO
 DO j = 1,jmax-1    
     DO i = 2,imax-1
 
-        T1sc = MbtpL(i,j)*Cave(i,j)*SQRT(etaX(i,j)**2 + etaY(i,j)**2) / Ja(i,j)
+        T1sc = MbtpL(i,j)*Cave(i,j)*SQRT(etaX(i,j)**2 + etaY(i,j)**2)*Ja(i,j)
 
-        T2sc = MbtmR(i,j)*Cave(i,j)*SQRT(etaX(i,j+1)**2 + etaY(i,j+1)**2) / Ja(i,j+1)
+        T2sc = MbtmR(i,j)*Cave(i,j)*SQRT(etaX(i,j+1)**2 + etaY(i,j+1)**2)*Ja(i,j+1)
 
-        T3sc = Pp(i,j) / Ja(i,j)
+        T3sc = Pp(i,j)*Ja(i,j)
 
-        T4sc = Pm(i,j) / Ja(i,j+1)
+        T4sc = Pm(i,j)*Ja(i,j+1)
 
         
         Gpr(i,j,1) = T1sc*ULG(i,j,1) + T2sc*URG(i,j,1) 

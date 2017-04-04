@@ -47,24 +47,32 @@ SUBROUTINE lower_BC
               SQRT(siX(:,3)**2 + siY(:,3)**2)
 !------------------------------------------------------------------------------
 
-    u(:,1) = etaY(:,1)* &
-             (2.0*Util(:,2)*del2(:) - Util(:,3)*del3(:)) / Ja(:,1)
+    u(:,1) = etaY(:,1)*Ja(:,1)* &
+             (2.0*Util(:,2)*del2(:) - Util(:,3)*del3(:))
 
-    v(:,1) = -etaX(:,1)* &
-             (2.0*Util(:,2)*del2(:) - Util(:,3)*del3(:)) / Ja(:,1)
+    v(:,1) = -etaX(:,1)*Ja(:,1)* &
+             (2.0*Util(:,2)*del2(:) - Util(:,3)*del3(:))
 
     p(:,1) = p(:,2)
 
     rho(:,1) = p(:,1)*gama / &
                ((gama-1.0)*(h0(:,2) - 0.5*(u(:,1)**2 + v(:,1)**2))) 
+               
 
     Ust(:,1,1) = rho(:,1)
     Ust(:,1,2) = rho(:,1)*u(:,1)
     Ust(:,1,3) = rho(:,1)*v(:,1)
 
-    CALL stag_enthalpy  ! for Etot (4th el.), uses h0 based on the new values!
+    !CALL stag_enthalpy  ! for Etot (4th el.), uses h0 based on the new values
 
     Ust(:,1,4) = h0(:,1)*rho(:,1)
+
+  ! CHECK stuff w/ this loop...
+    ! j = 1
+    !   DO i = 1,imax
+    !        ! WRITE(6,*) - 0.5*(u(i,j)**2 + v(i,j)**2)
+    !   END DO
+
 
 END SUBROUTINE lower_BC
 
@@ -78,19 +86,17 @@ SUBROUTINE upper_BC
     Vtil(:,:) = etaX(:,:)*u(:,:) + etaY(:,:)*v(:,:)
 
     deln1(:) = SQRT(siX(:,jmax)**2 + siY(:,jmax)**2) / &
-               SQRT(siX(:,jmax-1)**2 + siY(:,jmax-1)**2)   
+               SQRT(siX(:,jmax-1)**2 + siY(:,jmax-1)**2)
     
     deln2(:) = SQRT(siX(:,jmax)**2 + siY(:,jmax)**2) / &
                SQRT(siX(:,jmax-2)**2 + siY(:,jmax-2)**2)
-!---------------------------------------------------------------------
+!------------------------------------------------------------------------------
     
-    u(:,jmax) = etaY(:,jmax)* &
-                (2.0*Util(:,jmax-1)*deln1(:) - Util(:,jmax-2)*deln2(:)) / &
-                                                                     Ja(:,jmax)
+    u(:,jmax) = etaY(:,jmax)*Ja(:,jmax)* &
+                (2.0*Util(:,jmax-1)*deln1(:) - Util(:,jmax-2)*deln2(:))
 
-    v(:,jmax) = -etaX(:,jmax)* &
-                (2.0*Util(:,jmax-1)*deln1(:) - Util(:,jmax-2)*deln2(:)) / &
-                                                                     Ja(:,jmax)
+    v(:,jmax) = -etaX(:,jmax)*Ja(:,jmax)* &
+                (2.0*Util(:,jmax-1)*deln1(:) - Util(:,jmax-2)*deln2(:))
 
     p(:,jmax) = p(:,jmax-1)
 
@@ -101,10 +107,15 @@ SUBROUTINE upper_BC
     Ust(:,jmax,2) = rho(:,jmax)*u(:,jmax)
     Ust(:,jmax,3) = rho(:,jmax)*v(:,jmax)
 
-    CALL stag_enthalpy 
-!   ^ room for optimization here, feed in the i or j line you want or something...
+    ! CALL stag_enthalpy 
 
     Ust(:,jmax,4) = h0(:,jmax)*rho(:,jmax)
+
+  ! CHECK STUFF WITH THIS LOOP (below..)
+    ! j = jmax
+    ! DO i = 1,imax
+    !     WRITE(6,*) - 0.5*(u(i,jmax)**2 + v(i,jmax)**2)
+    ! END DO
 
 END SUBROUTINE upper_BC
 

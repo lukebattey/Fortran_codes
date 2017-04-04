@@ -10,12 +10,12 @@ READ(16,*) infile
 READ(16,*) outfile
 CLOSE(16)
 
- OPEN(26,FILE = infile, FORM = 'FORMATTED')
+OPEN(26,FILE = infile, FORM = 'FORMATTED')
     READ(26,'(A)') junk8 
     READ(26,'(A,I3,A,I3)') junk8,imax,junk8,jmax
 
-    ALLOCATE(X(imax,jmax),Y(imax,jmax),Ja(imax,jmax),Xeta(imax,jmax), &
-            Xsi(imax,jmax),Yeta(imax,jmax),Ysi(imax,jmax), &
+    ALLOCATE(X(imax,jmax),Y(imax,jmax),Ja(imax,jmax),IJa(imax,jmax), &
+            Xeta(imax,jmax),Xsi(imax,jmax),Yeta(imax,jmax),Ysi(imax,jmax), &
             etaX(imax,jmax),siX(imax,jmax),etaY(imax,jmax),siY(imax,jmax))
 
 DO j = 1,jmax
@@ -56,10 +56,13 @@ DO j=1,jmax
     DO i=1,imax
         siX(i,j)  = Yeta(i,j) / Ja(i,j)
         siY(i,j)  = -1.0*Xeta(i,j) / Ja(i,j)
-        etaX(i,j) = -1.0*Yeta(i,j) / Ja(i,j)
+        etaX(i,j) = -1.0*Ysi(i,j) / Ja(i,j)
         etaY(i,j) = Xsi(i,j) / Ja(i,j)
     END DO
 END DO
+
+IJa(:,:) = 1.0 / Ja(:,:)  !<- This has been a huge source of confusion, I will 
+                          !   remember to never trust what someone calls a Jacobian..
 
 !================ WRITING A FILE TO CHECK STUFF=============================
 OPEN(36,FILE = 'Jacobi_grid_plot.dat', FORM = 'FORMATTED')

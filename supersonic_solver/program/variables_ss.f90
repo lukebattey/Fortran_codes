@@ -4,7 +4,7 @@ MODULE variables_ss
 
 INTEGER,PARAMETER :: rDef=SELECTED_REAL_KIND(10)
 DOUBLE PRECISION,PARAMETER :: pi=4.0*ATAN(1.0),root2=2.0**0.5
-DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:) :: X,Y,Ja,Xeta,Xsi,Yeta,Ysi, &
+DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:) :: X,Y,Ja,IJa,Xeta,Xsi,Yeta,Ysi, &
                                               etaX,siX,etaY,siY,u,v,p,rho, &
                                               Util,Vtil,h0,dti,csqrt,ci
                                              
@@ -24,6 +24,6 @@ DOUBLE PRECISION :: dt0,dy0,theta,L,r,t0,y0,seSS,RMSeSS,seEX, &
 
 LOGICAL :: fluxlim
 
-INTEGER :: i,j,jmax,imax,n,order,stind
+INTEGER :: i,j,jmax,imax,n,order,stind,nmax
 
 END MODULE variables_ss

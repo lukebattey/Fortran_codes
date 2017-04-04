@@ -12,8 +12,8 @@ REAL(KIND=rDef) :: cRMS,eRMS,XeSumS,YeSumS,Xsi,Xeta,Ysi,Yeta,&
 XeRMS,YeRMS,Xes,Yes
 
 !----------------------- Open files and set stipulations ----------------------
-imax = 51
-jmax = 51
+imax = 26
+jmax = 26
 
 ALLOCATE(X(imax,jmax),Y(imax,jmax),Ja(imax,jmax))
  
@@ -54,7 +54,7 @@ DO j=1,jmax
 END DO
 
   !--------------------- Writing Results to file for TecPlot360ex------------------------
-OPEN(36,FILE = outfile, FORM = 'FORMATTED')
+OPEN(36,FILE = 'uniform_grid.dat', FORM = 'FORMATTED')
 WRITE(36,'(A)') 'VARIABLES = "X" "Y" "J"'
 WRITE(36,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
 DO j=1,jmax

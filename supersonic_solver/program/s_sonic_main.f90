@@ -44,6 +44,7 @@ DO n = 1,nmax
     CALL get_dt
     
     CALL stag_enthalpy
+    
     CALL lower_BC
     CALL upper_BC
     CALL outflow_BC

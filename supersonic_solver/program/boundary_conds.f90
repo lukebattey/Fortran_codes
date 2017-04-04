@@ -57,24 +57,25 @@ SUBROUTINE lower_BC
 
     rho(:,1) = p(:,1)*gama / &
                ((gama-1.0)*(h0(:,2) - 0.5*(u(:,1)**2 + v(:,1)**2))) 
-               
 
     Ust(:,1,1) = rho(:,1)
     Ust(:,1,2) = rho(:,1)*u(:,1)
     Ust(:,1,3) = rho(:,1)*v(:,1)
-
-    !CALL stag_enthalpy  ! for Etot (4th el.), uses h0 based on the new values
-
-    Ust(:,1,4) = h0(:,1)*rho(:,1)
+    Ust(:,1,4) = (p(:,1) / &
+    			       (gama-1)) + 0.5*rho(:,1)*(u(:,1)**2 + v(:,1)**2) 
 
   ! CHECK stuff w/ this loop...
-     TempoRMS = 0.00
-     j = 1
-       DO i = 1,imax
-            TempoRMS = TempoRMS + rho(i,j)**2
-       END DO
+     ! TempoRMS = 0.00
+     ! j = 2
+     !   DO i = 1,imax
+     !        WRITE(6,*) h0(i,j),1234
+     !        TempoRMS = TempoRMS + rho(i,j)**2  
+     !   END DO
 
-       WRITE(6,*) SQRT(TempoRMS/(imax*1.0))
+    !To write the RMS value of the thing above... 
+       !WRITE(6,*) SQRT(TempoRMS/(imax*1.0))
+
+       
 
 END SUBROUTINE lower_BC
 
@@ -107,17 +108,10 @@ SUBROUTINE upper_BC
 
     Ust(:,jmax,1) = rho(:,jmax)
     Ust(:,jmax,2) = rho(:,jmax)*u(:,jmax)
-    Ust(:,jmax,3) = rho(:,jmax)*v(:,jmax)
+    Ust(:,jmax,3) = rho(:,jmax)*v(:,jmax) 
 
-    ! CALL stag_enthalpy 
-
-    Ust(:,jmax,4) = h0(:,jmax)*rho(:,jmax)
-
-  ! CHECK STUFF WITH THIS LOOP (below..)
-    ! j = jmax
-    ! DO i = 1,imax
-    !     WRITE(6,*) - 0.5*(u(i,jmax)**2 + v(i,jmax)**2)
-    ! END DO
+    Ust(:,jmax,4) = (p(:,jmax) / &
+                    (gama-1)) + 0.5*rho(:,jmax)*(u(:,jmax)**2 + v(:,jmax)**2)
 
 END SUBROUTINE upper_BC
 

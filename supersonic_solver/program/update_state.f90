@@ -4,7 +4,7 @@ USE variables_ss
 
 IMPLICIT NONE
 
-UstNEW(:,:,:) = 0.00
+UstNEW(:,:,:) = 0.002
 
 DO j = 2,jmax-1
     DO i = 2,imax-1

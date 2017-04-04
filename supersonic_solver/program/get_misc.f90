@@ -5,13 +5,12 @@ USE variables_ss
 IMPLICIT NONE
 
 CONTAINS 
-!=================== STAGNATION ENTHALPY ======================================
+!=================== STAGNATION ENTHALPY =======================================
 ! Finds the stag enthalpy (h0) whenever called instant for the whole grid.
 ! Why did I even make this a subroutine????
 
 SUBROUTINE stag_enthalpy
-    h0(:,:) = p(:,:)*gama/(rho(:,:)*(gama-1.0)) + &
-                                              (u(:,:)**2 + v(:,:)**2)/2.0
+h0(:,:) = ((p(:,:)*gama) / (rho(:,:)*(gama-1.0))) + 0.5*(u(:,:)**2 + v(:,:)**2)
 END SUBROUTINE stag_enthalpy
 
 

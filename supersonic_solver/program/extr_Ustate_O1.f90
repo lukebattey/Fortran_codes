@@ -16,7 +16,7 @@ END DO
 DO j = 1,jmax-1
     DO i = 2,imax-1
         URG(i,j,:) = Ust(i,j+1,:)    ! R is for "above"..???? REALLY??
-        ULG(i,j,:) = Ust(i,j,:)  ! L is for "below"..
+        ULG(i,j,:) = Ust(i,j,:)  ! L is for "below"...
     END DO
 END DO
  

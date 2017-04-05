@@ -4,7 +4,7 @@ IS_IT_DONE.dat			! Output File Name (output/restart state)
 4.0						! density (rho)
 1.4						! Gas constant (gama). Pressure = 1/gama
 0.5						! CFL number (user specified...)
-1						! Order of scheme (1 or 2)
+2						! Order of scheme (1 or 2 only...)
 F  						! Use Flux Limiters
-100000	  		    	! nmax  (max # of iterations) 
+2000	  		    	! nmax  (max # of iterations) 
 5e-7					! Steady-State RMS error convergence criteria

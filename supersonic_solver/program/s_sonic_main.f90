@@ -38,32 +38,41 @@ CALL init_cond
 !======= Numerical Scheme ===================================
 
 IF (order == 1) THEN
-DO n = 1,nmax
-
-    CALL get_primitive
-    CALL get_dt
-    
-    CALL stag_enthalpy
-    
-    CALL lower_BC
-    CALL upper_BC
-    CALL outflow_BC
-
-    CALL extr_Ustate_o1
-
-    CALL AUSMPWpF
-    CALL AUSMPWpG
-
-    CALL update_state
-
-END DO 
-
+    DO n = 1,nmax
+        CALL get_primitive
+        CALL get_dt
+        CALL stag_enthalpy
+        CALL lower_BC
+        CALL upper_BC
+        CALL outflow_BC
+        CALL extr_Ustate_o1 !<-- The only reason it's o1..
+        CALL AUSMPWpF
+        CALL AUSMPWpG
+        CALL update_state
+    END DO 
 
 ELSE IF (order == 2) THEN
-    WRITE(6,*) 'UNDER CONSTRUCTION, QUITTING..'
-    STOP
-ELSE 
-    WRITE(6,*) '1st or 2nd ORDER ONLY PLEASE!'
+
+    IF (fluxlim .eqv. .FALSE.) THEN
+        DO n = 1,nmax
+            CALL get_primitive
+            CALL get_dt
+            CALL stag_enthalpy
+            CALL lower_BC
+            CALL upper_BC
+            CALL outflow_BC
+            CALL upwind_U_LR_o2 !<-- The only reason it's o2..
+            CALL AUSMPWpF
+            CALL AUSMPWpG
+            CALL update_state
+        END DO
+    ELSE 
+        WRITE(6,*) 'UNDER CONSTRUCTION: QUITTING'
+        STOP
+    END IF !<---fluxlim check
+
+ELSE
+    WRITE(6,*) '1st or 2nd order only please! Quitting..'
     STOP
 END IF
 

@@ -2,3 +2,6 @@ This folder contains a program that will use the
 state-vector contour plot produced by the super
 sonic solver and generate a contour plot for the
 Mach number and static pressure.
+
+Simply fill out the "inputfile.dat" then run 
+"report_plots.exe"

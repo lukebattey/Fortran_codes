@@ -93,4 +93,34 @@ SUBROUTINE get_primitive
 END SUBROUTINE get_primitive
 
 
+
+!=================== Check convergence! ======================================
+
+
+SUBROUTINE check_converge
+
+DOUBLE PRECISION :: eSoS,RMSe
+
+eSoS = 0.000
+
+DO j=1,jmax
+    DO i=1,imax
+        DO stind = 1,4
+
+            eSoS = eSoS + (UstNew(i,j,stind) - Ust(i,j,stind))**2
+
+        END DO
+    END DO
+END DO
+
+    RMSe = SQRT(eSoS / (imax*jmax*4))
+
+    !WRITE(6,*) RMSe,n
+
+
+END SUBROUTINE check_converge
+
+
+
+
 END MODULE get_misc

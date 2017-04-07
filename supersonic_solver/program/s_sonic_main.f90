@@ -49,11 +49,28 @@ IF (order == 1) THEN
         CALL AUSMPWpF
         CALL AUSMPWpG
         CALL update_state
+        CALL check_converge
+        Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
     END DO 
 
 ELSE IF (order == 2) THEN
 
-    IF (fluxlim .eqv. .FALSE.) THEN
+    IF (fluxlim .eqv. .TRUE.) THEN
+        DO n = 1,nmax
+            CALL get_primitive
+            CALL get_dt
+            CALL stag_enthalpy
+            CALL lower_BC
+            CALL upper_BC
+            CALL outflow_BC
+            CALL fluxlim_U_LR_o2 !<-- extrapo state vec w/ limiter
+            CALL AUSMPWpF
+            CALL AUSMPWpG
+            CALL update_state
+            CALL check_converge
+            Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
+        END DO
+    ELSE  
         DO n = 1,nmax
             CALL get_primitive
             CALL get_dt
@@ -65,12 +82,10 @@ ELSE IF (order == 2) THEN
             CALL AUSMPWpF
             CALL AUSMPWpG
             CALL update_state
+            CALL check_converge
+            Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
         END DO
-    ELSE 
-        WRITE(6,*) 'UNDER CONSTRUCTION: QUITTING'
-        STOP
     END IF !<---fluxlim check
-
 ELSE
     WRITE(6,*) '1st or 2nd order only please! Quitting..'
     STOP

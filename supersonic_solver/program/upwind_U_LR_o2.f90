@@ -6,7 +6,7 @@ IMPLICIT NONE
 
 DOUBLE PRECISION,DIMENSION(4) :: delUp3h,delUm1h,delUp1h
 
-! get URF and ULF (F is i+1/2,j)
+! get URF and ULF (F is i+1/2,j).=======================================
 DO j = 2,jmax-1
     DO i = 1,imax-1
 
@@ -38,9 +38,9 @@ DO j = 2,jmax-1
 
     END DO
 END DO
-                                    !================================
-! get URG and ULG (G is i,j+1/2).   !===== UPDATE THIS TO BE O2 =====
-DO j = 1,jmax-1                     !================================
+                                   
+! get URG and ULG (G is i,j+1/2).=======================================  
+DO j = 1,jmax-1                    
     DO i = 2,imax-1
 
         IF (j == 1) THEN
@@ -69,8 +69,6 @@ DO j = 1,jmax-1                     !================================
 
         END IF
 
-        ! URG(i,j,:) = Ust(i,j+1,:)    ! R is for "above"...
-        ! ULG(i,j,:) = Ust(i,j,:)  ! L is for "below"...
     END DO
 END DO
  

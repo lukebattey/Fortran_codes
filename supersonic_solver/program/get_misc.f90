@@ -107,7 +107,7 @@ DO j=1,jmax
     DO i=1,imax
         DO stind = 1,4
 
-            eSoS = eSoS + (UstNew(i,j,stind) - Ust(i,j,stind))**2
+            eSoS = eSoS + (UstNew(i,j,1) - Ust(i,j,1))**2
 
         END DO
     END DO
@@ -115,8 +115,19 @@ END DO
 
     RMSe = SQRT(eSoS / (imax*jmax*4))
 
-    !WRITE(6,*) RMSe,n
+    WRITE(6,*) RMSe,n
 
+    convCrit = 1e-8
+
+    ! IF (abs(RMSe - lastRMSe) <= convCrit) THEN
+     converged = abs(RMSe - lastRMSe) <= convCrit
+     ! WRITE(6,*) 'WHAT THE FUCK?',converged
+    ! ELSE
+    !  converged = .false.
+    ! END IF
+
+
+    lastRMSe = RMSe
 
 END SUBROUTINE check_converge
 

@@ -6,6 +6,12 @@ USE get_misc
 
     IMPLICIT NONE
 
+IF (order == 1 .and. fluxlim .eqv. .true.) THEN
+    WRITE(6,*) "Flux limiters aren't used for 1st order cases..."
+    WRITE(6,*) 'QUITTING'
+    STOP
+END IF
+
 !======== READ INPUT FILE (all global variables) ============
 OPEN(16,FILE = 'inputfile.dat', FORM = 'FORMATTED')
 READ(16,*) infile 
@@ -18,6 +24,9 @@ READ(16,*) order
 READ(16,*) fluxlim
 READ(16,*) nmax
 CLOSE(16) 
+
+LastRMSe = 10000000.0
+converged = .FALSE.
 
 !======== READ IN GRID, GET METRICS, AND JACOBIANS ==========
 CALL grid_read_metrics
@@ -34,7 +43,6 @@ ALLOCATE(URG(2:imax-1,jmax-1,4),ULG(2:imax-1,jmax-1,4), &
 
 CALL init_cond
 
-
 !======= Numerical Scheme ===================================
 
 IF (order == 1) THEN
@@ -50,6 +58,12 @@ IF (order == 1) THEN
         CALL AUSMPWpG
         CALL update_state
         CALL check_converge
+
+        if (converged) THEN
+            CALL write_sol
+            stop
+        end if 
+
         Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
     END DO 
 
@@ -68,6 +82,12 @@ ELSE IF (order == 2) THEN
             CALL AUSMPWpG
             CALL update_state
             CALL check_converge
+
+            if (converged) THEN
+                CALL write_sol
+                stop
+            end if 
+
             Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
         END DO
     ELSE  
@@ -83,6 +103,12 @@ ELSE IF (order == 2) THEN
             CALL AUSMPWpG
             CALL update_state
             CALL check_converge
+
+            if (converged) THEN
+                CALL write_sol
+                stop
+            end if 
+
             Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
         END DO
     END IF !<---fluxlim check
@@ -90,7 +116,5 @@ ELSE
     WRITE(6,*) '1st or 2nd order only please! Quitting..'
     STOP
 END IF
-
-CALL write_sol
 
 END PROGRAM s_sonic_main

@@ -1,5 +1,5 @@
-IS_IT_DONE.dat				 ! Input File Name (State vector plot)
-p_and_M.dat					 ! Output File Name (M and p plot)
+fluxlim_state.dat			 ! Input File Name (State vector plot)
+fluxlim_pM.dat				 ! Output File Name (M and p plot)
 1.4							 ! gama 
 
 input is a grid with state vector contour plots.

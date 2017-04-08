@@ -23,12 +23,12 @@ END SUBROUTINE inflow_BC
 !================ OUTFLOW BOUNDARY CONDITION ==================================
 ! finds the outflow "wall" values (i = imax). Called before each time step!  
 SUBROUTINE outflow_BC
-    i = imax
-        Ust(i,:,:) =  Ust(i-1,:,:)  ! i = imax !!!!! (right edge)
-        rho(i,:)   =  rho(i-1,:)
-        u(i,:)     =  u(i-1,:)
-        v(i,:)     =  v(i-1,:)  
-        p(i,:)     =  p(i-1,:)
+    i = imax  !(right edge)
+        Ust(i,:,:) =  2.0*Ust(i-1,:,:)-Ust(i-2,:,:)
+        rho(i,:)   =  2.0*rho(i-1,:) - rho(i-2,:)
+        u(i,:)     =    2.0*u(i-1,:)  -  u(i-2,:)
+        v(i,:)     =    2.0*v(i-1,:)  -  v(i-2,:)  
+        p(i,:)     =    2.0*p(i-1,:)  -  p(i-2,:)
 END SUBROUTINE outflow_BC
 
 

@@ -19,11 +19,12 @@ CHARACTER(len=30) :: infile,outfile
 CHARACTER(len=8) :: junk8 
                                    
 DOUBLE PRECISION :: dt0,dy0,theta,L,r,t0,y0,seSS,RMSeSS,seEX, &
-                   RMSeEX,ccRMSeSS,RMSeEXmax,ui,rhoi,gama,Eti, &
-                   CFL,dt,NaNcheck,TempoRMS,lastRMSe,convCrit
+                    RMSeEX,ccRMSeSS,RMSeEXmax,ui,rhoi,gama,Eti, &
+                    CFL,dt,NaNcheck,TempoRMS,lastRMSe,convCrit, &
+                    RMSe
 
 LOGICAL :: fluxlim,converged
 
-INTEGER :: i,j,jmax,imax,n,order,stind,nmax
+INTEGER :: i,j,jmax,imax,n,order,stind,nmax,wfrqRMSe
 
 END MODULE variables_ss

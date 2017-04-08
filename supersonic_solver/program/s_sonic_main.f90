@@ -12,6 +12,10 @@ IF (order == 1 .and. fluxlim .eqv. .true.) THEN
     STOP
 END IF
 
+wfrqRMSe = 1          
+LastRMSe = 12345678.9 
+converged = .FALSE.
+
 !======== READ INPUT FILE (all global variables) ============
 OPEN(16,FILE = 'inputfile.dat', FORM = 'FORMATTED')
 READ(16,*) infile 
@@ -23,10 +27,9 @@ READ(16,*) CFL
 READ(16,*) order
 READ(16,*) fluxlim
 READ(16,*) nmax
+READ(16,*) convCrit
+READ(16,*) wfrqRMSe
 CLOSE(16) 
-
-LastRMSe = 10000000.0
-converged = .FALSE.
 
 !======== READ IN GRID, GET METRICS, AND JACOBIANS ==========
 CALL grid_read_metrics
@@ -60,11 +63,13 @@ IF (order == 1) THEN
         CALL check_converge
 
         if (converged) THEN
+            WRITE(6,*) n,ABS(RMSe-lastRMSe)
             CALL write_sol
             stop
         end if 
 
         Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
+        lastRMSe = RMSe
     END DO 
 
 ELSE IF (order == 2) THEN
@@ -84,11 +89,13 @@ ELSE IF (order == 2) THEN
             CALL check_converge
 
             if (converged) THEN
+                WRITE(6,*) n,ABS(RMSe-lastRMSe)
                 CALL write_sol
                 stop
             end if 
 
             Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
+            lastRMSe = RMSe
         END DO
     ELSE  
         DO n = 1,nmax
@@ -105,11 +112,13 @@ ELSE IF (order == 2) THEN
             CALL check_converge
 
             if (converged) THEN
+                WRITE(6,*) n,ABS(RMSe-lastRMSe)
                 CALL write_sol
                 stop
             end if 
 
             Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
+            lastRMSe = RMSe
         END DO
     END IF !<---fluxlim check
 ELSE

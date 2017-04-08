@@ -1,5 +1,5 @@
 dia_chan_grid.dat		! Input File Name (initial conditions)
-final_state.dat			! Output File Name (output/restart state)
+o2_stdyst_U.dat			! Output File Name (output/restart state)
 1.0						! Inflow velocity (u)
 4.0						! density (rho)
 1.4						! Gas constant (gama). Pressure = 1/gama
@@ -7,4 +7,5 @@ final_state.dat			! Output File Name (output/restart state)
 2						! Order of scheme (1 or 2 only...)
 F  						! Use Flux Limiters
 10000	  		    	! nmax  (max # of iterations) 
-5e-7					! Steady-State RMS error convergence criteria
+1e-8					! Steady-State RMSe Residual convergence criteria
+10						! RMSe Residual write frequency (1 is default)

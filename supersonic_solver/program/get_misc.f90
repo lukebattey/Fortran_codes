@@ -31,7 +31,13 @@ SUBROUTINE write_sol
     END DO
     CLOSE(36)
 
-    WRITE(6,'(A)') ''
+    CALL cpu_time(EndTime)
+
+    RunTime = EndTime - StartTime
+
+    WRITE(6,*) ' '
+    WRITE(6,'(A,I7,A,F9.4,A)') 'Converged with',n,' iterations in',RunTime," seconds" 
+    WRITE(6,'(A)') 'Iteration vs. Residual RMSe history printed above'
     WRITE(6,*) 'Last state wrote to:  ',outfile
 END SUBROUTINE write_sol
 
@@ -94,8 +100,36 @@ END SUBROUTINE get_primitive
 
 
 
-!=================== Check convergence! ======================================
+!=================== minmod! ======================================
+! ! excecutes the minmod function given as Eq. 4.220, pg 205 in Anderson (2013)
 
+FUNCTION minmod(xm, ym)
+   
+   IMPLICIT NONE
+   DOUBLE PRECISION, INTENT(IN) :: xm(4), ym(4)
+   DOUBLE PRECISION, PARAMETER :: oe = 1.00
+   DOUBLE PRECISION :: minmod(4)
+   
+   ! minmod = sign(xm(:),oe)*max(0.,min(abs(xm(:)),ym(:)*sign(xm(:),oe)))
+
+    DO stind = 1,4
+        IF (xm(stind)*ym(stind) > 0.0) THEN
+            IF (ABS(xm(stind)) < ABS(ym(stind))) THEN
+                minmod(stind) = xm(stind)
+            ELSE
+                minmod(stind) = ym(stind)
+            END IF
+        ELSE IF (xm(stind)*ym(stind) <= 0.0) THEN
+            minmod(stind) = 0.00
+        END IF
+    END DO
+
+END FUNCTION minmod
+
+
+
+!=================== Check convergence! ======================================
+! Figure it out...
 
 SUBROUTINE check_converge
 

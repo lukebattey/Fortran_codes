@@ -66,11 +66,11 @@ IJa(:,:) = 1.0 / Ja(:,:)  !<- This has been a huge source of confusion, I will
 
 !================ WRITING A FILE TO CHECK STUFF=============================
 OPEN(36,FILE = 'Jacobi_grid_plot.dat', FORM = 'FORMATTED')
-WRITE(36,'(A)') 'VARIABLES = "X" "Y" "siY"'
+WRITE(36,'(A)') 'VARIABLES = "X" "Y" "siX" "siY" "etaX" "etaY"'
 WRITE(36,'(A,I3,A,I3)') 'ZONE I= ',imax,'    J=  ',jmax
 DO j=1,jmax
   DO i=1,imax
-    WRITE(36,*) X(i,j),Y(i,j),siY(i,j)   ! comment this section if you want..
+    WRITE(36,*) X(i,j),Y(i,j),siX(i,j),siY(i,j),etaX(i,j),etaY(i,j)   ! comment this section if you want..
   END DO
 END DO
 CLOSE(36)

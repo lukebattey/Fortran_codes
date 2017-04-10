@@ -17,7 +17,7 @@ DOUBLE PRECISION :: VNtilAve,ps,pmin,oneDP,wPw,Mave,T1sc,T2sc,T3sc,T4sc
 oneDP = 1.00 ! For the intrinsic sign function because it's dumb...
 
 !===================================================================================
-!================= F' vectors: Fiphj = F'(i+1/2,j)) ================================
+!================= G' vectors: G'(i,j+1/2)) ================================
 !===================================================================================
 
 ALLOCATE(UNtilL(2:imax-1,jmax-1),UNtilR(2:imax-1,jmax-1), &     
@@ -45,18 +45,17 @@ DO j = 1,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR F FLUXES...
                       (siY(i,j)*ULG(i,j,3) / ULG(i,j,1))) / &
                       SQRT(siX(i,j)**2 + siY(i,j)**2)
 
-        UNtilR(i,j) = ((siX(i+1,j)*URG(i,j,2) / URG(i,j,1)) + & 
-                      (siY(i+1,j)*URG(i,j,3) / URG(i,j,1))) / &
+        UNtilR(i,j) = ((siX(i,j+1)*URG(i,j,2) / URG(i,j,1)) + & 
+                      (siY(i,j+1)*URG(i,j,3) / URG(i,j,1))) / &
                       SQRT(siX(i,j+1)**2 + siY(i,j+1)**2)   
 
         VNtilL(i,j) = ((etaX(i,j)*ULG(i,j,2) / ULG(i,j,1)) + & 
                       (etaY(i,j)*ULG(i,j,3) / ULG(i,j,1))) / &
                       SQRT(etaX(i,j)**2 + etaY(i,j)**2)         
 
-        VNtilR(i,j) = ((etaX(i+1,j)*URG(i,j,2) / URG(i,j,1)) + & 
-                      (etaY(i+1,j)*URG(i,j,3) / URG(i,j,1))) / &
+        VNtilR(i,j) = ((etaX(i,j+1)*URG(i,j,2) / URG(i,j,1)) + & 
+                      (etaY(i,j+1)*URG(i,j,3) / URG(i,j,1))) / &
                       SQRT(etaX(i,j+1)**2 + etaY(i,j+1)**2)
-
 
 
         ! Next: stagnation enthalpy normal to the interface (Eq. 15)
@@ -78,7 +77,7 @@ DO j = 1,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR F FLUXES...
 
         ! NaNcheck = h0norm(i,j)
         IF (ULG(i,j,4) < 0.00) THEN
-          WRITE(6,*) i,j,"WHAT?"
+          WRITE(6,*) i,j,"ULG4 is < 0.00 (AUSMPWpG)"
         END IF
 
         ! Next: cell-face Mach numbers from L and R (Eq. 17) 
@@ -123,8 +122,8 @@ CALL get_pressure  ! This gets pressure for entire grid, no loop please..
 pL(:,:) = (gama-1.0)*(ULG(:,:,4) - (ULG(:,:,2)**2 + ULG(:,:,3)**2) / &
     (2.0*ULG(:,:,1)))
 
-pR(:,:) = (gama-1.0)*(ULG(:,:,4) - (ULG(:,:,2)**2 + ULG(:,:,3)**2) / &
-    (2.0*ULG(:,:,1)))
+pR(:,:) = (gama-1.0)*(URG(:,:,4) - (URG(:,:,2)**2 + URG(:,:,3)**2) / &
+    (2.0*URG(:,:,1)))
 
 
 ! Next: pressure weighing "italic f" terms are found 
@@ -176,7 +175,6 @@ DO j = 1,jmax-1
 
         T4sc = Pm(i,j)*Ja(i,j+1)
 
-        
         Gpr(i,j,1) = T1sc*ULG(i,j,1) + T2sc*URG(i,j,1) 
 
         Gpr(i,j,2) = T1sc*ULG(i,j,2) + T2sc*URG(i,j,2) + &

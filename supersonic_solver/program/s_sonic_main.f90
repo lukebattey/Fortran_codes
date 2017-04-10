@@ -6,14 +6,16 @@ USE get_misc
 
     IMPLICIT NONE
 
+call cpu_time(StartTime)
+
 IF (order == 1 .and. fluxlim .eqv. .true.) THEN
     WRITE(6,*) "Flux limiters aren't used for 1st order cases..."
     WRITE(6,*) 'QUITTING'
     STOP
 END IF
 
-wfrqRMSe = 1          
-LastRMSe = 12345678.9 
+wfrqRMSe = 1
+LastRMSe = 12345678.9
 converged = .FALSE.
 
 !======== READ INPUT FILE (all global variables) ============
@@ -62,11 +64,11 @@ IF (order == 1) THEN
         CALL update_state
         CALL check_converge
 
-        if (converged) THEN
-            WRITE(6,*) n,ABS(RMSe-lastRMSe)
-            CALL write_sol
-            stop
-        end if 
+        ! if (converged) THEN
+        !     WRITE(6,*) n,ABS(RMSe-lastRMSe)
+        !     CALL write_sol
+        !     stop
+        ! end if 
 
         Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
         lastRMSe = RMSe
@@ -125,5 +127,23 @@ ELSE
     WRITE(6,*) '1st or 2nd order only please! Quitting..'
     STOP
 END IF
+
+IF (n == nmax .AND. converged .eqv. .FALSE.) THEN
+    WRITE(6,*) 'NOT REALLY CONVERGED, DONT TRUST THE FOLLOWING LINE!'
+    CALL write_sol
+    WRITE(6,*) "SOLUTION WRITTEN BUT IT IS NOOOOOT CONVERGED"
+END IF
+
+!============== END OF MAIN PROGRAM ====================================
+
+! checking values after the last time step
+
+! CALL get_primitive
+! Vtil(:,:) = etaX(:,:)*u(:,:) + etaY(:,:)*v(:,:)
+
+! j = 1
+! DO i = 1,imax
+!     WRITE(6,*) Vtil(i,j)
+! END DO
 
 END PROGRAM s_sonic_main

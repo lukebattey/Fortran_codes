@@ -19,5 +19,7 @@ DO j = 1,jmax-1
         ULG(i,j,:) = Ust(i,j,:)  ! L is for "below"...
     END DO
 END DO
+
+
  
 END SUBROUTINE extr_Ustate_o1

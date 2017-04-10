@@ -21,7 +21,7 @@ CHARACTER(len=8) :: junk8
 DOUBLE PRECISION :: dt0,dy0,theta,L,r,t0,y0,seSS,RMSeSS,seEX, &
                     RMSeEX,ccRMSeSS,RMSeEXmax,ui,rhoi,gama,Eti, &
                     CFL,dt,NaNcheck,TempoRMS,lastRMSe,convCrit, &
-                    RMSe
+                    RMSe,StartTime,EndTime,RunTime
 
 LOGICAL :: fluxlim,converged
 

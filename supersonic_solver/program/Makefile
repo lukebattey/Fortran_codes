@@ -18,7 +18,7 @@ AUSMPWpG.o: AUSMPWpG.f90 variables_ss.o
 AUSMPWpF.o: AUSMPWpF.f90 variables_ss.o
 	gfortran -c AUSMPWpF.f90
 
-fluxlim_U_LR_o2.o: fluxlim_U_LR_o2.f90 variables_ss.o
+fluxlim_U_LR_o2.o: fluxlim_U_LR_o2.f90 variables_ss.o get_misc.o
 	gfortran -c fluxlim_U_LR_o2.f90
 
 upwind_U_LR_o2.o: upwind_U_LR_o2.f90 variables_ss.o

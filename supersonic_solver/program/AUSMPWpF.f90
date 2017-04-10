@@ -62,8 +62,8 @@ DO j = 2,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR G FLUXES...
         h0norm(i,j) = 0.5*(ULF(i,j,4)/ULF(i,j,1) - 0.5*VNtilL(i,j)**2 + &
             URF(i,j,4)/URF(i,j,1) - 0.5*VNtilR(i,j)**2)
 
-        IF (h0norm(i,j) <= 0.00) THEN
-            WRITE(6,*) h0norm(i,j),' <--- h0norm < 0.. Quitting'
+        IF (ULF(i,j,4) <= 0.00) THEN
+            WRITE(6,*) i,j,' <--- ULF < 0.. Quitting'
             STOP
         END IF 
 

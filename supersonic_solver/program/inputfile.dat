@@ -1,11 +1,16 @@
 dia_chan_grid.dat		! Input File Name (initial conditions)
-flo2_Ust.dat 			! Output File Name (output/restart state)
+fLo2_Ust.dat				! Output File Name (output/restart state)
 1.0						! Inflow velocity (u)s
 4.0						! density (rho)
 1.4						! Gas constant (gama). Pressure = 1/gama
-0.3						! CFL number (user specified...)
+0.5						! CFL number (user specified...)
 2						! Order of scheme (1 or 2 only...)
-F 						! Use Flux Limiters
-100000	  		    	! nmax  (max # of iterations) 
+T						! Use Flux Limiters
+10000	  		    	! nmax  (max # of iterations) 
 1e-8					! Steady-State RMSe Residual convergence criteria
 10						! RMSe Residual write frequency (1 is default)
+
+! dia_chan_grid.dat is the given fine grid for this project
+
+! Jacobi_grid_plot.dat is written every time the solver is ran. Includes
+! Jacobian contour plot as well as all grid metrics.

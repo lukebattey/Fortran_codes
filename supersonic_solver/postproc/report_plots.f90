@@ -67,6 +67,10 @@ DO j=1,jmax
 END DO
 CLOSE(36)
 
+WRITE(6,*) ' '
+WRITE(6,*) 'Done for: ',infile
+WRITE(6,*) 'Wrote: ',outfile
+
 
 
 END PROGRAM report_plots

@@ -14,7 +14,7 @@ DOUBLE PRECISION :: wm,oe,Ftest1,Gtest1,RMSt1,RMSt2
 RMSt1 = 0.00
 RMSt2 = 0.00 
   
-wm = 1.00 ! hard coding this. I don't want to mess it up..
+wm = 1.3 ! hard coding this. I don't want to mess it up..
 oe = 1.0000 ! this is just 1, so the compiler is happy...
 
 ! WRITE(6,*) "FLUX LIMITING EXTRAPOLATION CALLED!!!"
@@ -56,6 +56,7 @@ DO j = 2,jmax-1
 
             xm(:) = delUp3h(:)
             ym(:) = wm*delUp1h(:)
+	! delBPm1h(:) = sign(xm(:),oe)*max(0.,min(abs(xm(:)),ym(:)*sign(xm(:),oe)))            
             delBMp3h(:) = minmod(xm, ym)
 
             ULF(i,j,:) = Ust(i,j,:) + 0.5*delBPm1h(:)
@@ -97,10 +98,12 @@ DO j = 1,jmax-1
 
             xm(:) = delUm1h(:)
             ym(:) = wm*delUp1h(:)
+    ! delBPm1h(:) = sign(xm(:),oe)*max(0.,min(abs(xm(:)),ym(:)*sign(xm(:),oe)))    
             delBPm1h(:) = minmod(xm, ym)
 
             xm(:) = delUp3h(:)
             ym(:) = wm*delUp1h(:)
+    ! delBPm1h(:) = sign(xm(:),oe)*max(0.,min(abs(xm(:)),ym(:)*sign(xm(:),oe)))
             delBMp3h(:) = minmod(xm, ym)
 
             ULG(i,j,:) = Ust(i,j,:) + 0.5*delBPm1h(:)

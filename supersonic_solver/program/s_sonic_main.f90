@@ -64,11 +64,11 @@ IF (order == 1) THEN
         CALL update_state
         CALL check_converge
 
-        ! if (converged) THEN
-        !     WRITE(6,*) n,ABS(RMSe-lastRMSe)
-        !     CALL write_sol
-        !     stop
-        ! end if 
+        if (converged) THEN
+            WRITE(6,*) n,ABS(RMSe-lastRMSe)
+            CALL write_sol
+            stop
+        end if 
 
         Ust(2:imax-1,2:jmax-1,:) = UstNEW(2:imax-1,2:jmax-1,:)
         lastRMSe = RMSe

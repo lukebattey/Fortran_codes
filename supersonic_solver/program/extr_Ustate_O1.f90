@@ -20,6 +20,5 @@ DO j = 1,jmax-1
     END DO
 END DO
 
-
  
 END SUBROUTINE extr_Ustate_o1

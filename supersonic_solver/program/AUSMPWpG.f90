@@ -59,6 +59,16 @@ DO j = 1,jmax-1    !<--- LOOPS ARE ALSO DIFFERENT FOR F FLUXES...
 
 
         ! Next: stagnation enthalpy normal to the interface (Eq. 15)
+
+        ! pL(:,:) = (gama-1.0)*(ULG(:,:,4) - (ULG(:,:,2)**2 + ULG(:,:,3)**2) / &
+        !           (2.0*ULG(:,:,1)))
+
+        ! pR(:,:) = (gama-1.0)*(URG(:,:,4) - (URG(:,:,2)**2 + URG(:,:,3)**2) / &
+        !           (2.0*URG(:,:,1)))
+
+        
+        
+
         h0norm(i,j) = 0.5*(ULG(i,j,4)/ULG(i,j,1) - 0.5*UNtilL(i,j)**2 + &
             URG(i,j,4)/URG(i,j,1) - 0.5*UNtilR(i,j)**2)
 

@@ -1,5 +1,5 @@
-o1_Ust.dat 					 ! Input File Name (State vector plot)
-o1_pM.dat					 ! Output File Name (M and p plot)
+fLo2_Ust.dat 					 ! Input File Name (State vector plot)
+fLo2_pM.dat					 ! Output File Name (M and p plot)
 1.4							 ! gama 
 
 input is a grid with state vector contour plots.

@@ -134,16 +134,5 @@ IF (n == nmax .AND. converged .eqv. .FALSE.) THEN
     WRITE(6,*) "SOLUTION WRITTEN BUT IT IS NOOOOOT CONVERGED"
 END IF
 
-!============== END OF MAIN PROGRAM ====================================
-
-! checking values after the last time step
-
-! CALL get_primitive
-! Vtil(:,:) = etaX(:,:)*u(:,:) + etaY(:,:)*v(:,:)
-
-! j = 1
-! DO i = 1,imax
-!     WRITE(6,*) Vtil(i,j)
-! END DO
 
 END PROGRAM s_sonic_main

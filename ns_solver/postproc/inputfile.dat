@@ -1,0 +1,8 @@
+check_p.dat 				 ! Input File Name (State vector plot)
+prim_o1.dat					 ! Output File Name (M and p plot)
+1.4							 ! gama 
+
+input is a grid with state vector contour plots.
+output is the same grid but with an M and p contour plot.
+
+Both use Tecplot 360 ex format

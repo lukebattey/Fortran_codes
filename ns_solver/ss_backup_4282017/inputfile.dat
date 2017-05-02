@@ -1,0 +1,26 @@
+uniform_grid.dat		   ! Input File Name (initial conditions)
+check_visc.dat			   ! Output File Name (output/restart state)
+2.0						   ! Mach number - Free Stream (Minf)
+300.0					   ! Temperature - Free Stream (Tinf)
+0.01					   ! Density ----- Free Stream (rhoinf)
+1.4						   ! Gas constant (gama). Pressure = 1/gama(M^2)
+287.0					   ! R perfect gas constant (Rgas) 
+1.458e-6				   ! C1 - Sutherlands Constant 1
+110.4					   ! C2 - Sutherlands Constant 2
+2.495e-3				   ! C3 - Sutherlands Constant 3
+194.0					   ! C4 - Sutherlands Constant 4
+0.4						   ! CFL number (user specified...)
+2						   ! Order of scheme? (1 or 2 only...)
+T						   ! Use Viscous Fluxes? (T or F)
+T 						   ! Viscous lower wall? (T removes upper wall)
+F 						   ! Isothermal Lower wall? (F for adiabatic)
+F						   ! Use Flux Limiters (T or F)
+1		  		    	   ! nmax  (max # of iterations)
+T 						   ! Go to nmax to write? (even past converged) 
+1e-10					   ! S-S RMSe Residual convergence criteria
+10						   ! RMSe Res write frequency (1 is default)
+ 
+! dia_chan_grid.dat is the given fine grid for this project
+ 
+! Jacobi_grid_plot.dat is written every time the solver is ran. Includes
+! Jacobian contour plot as well as all grid metrics.

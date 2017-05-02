@@ -110,8 +110,11 @@ FUNCTION minmod(xm, ym)
    DOUBLE PRECISION, PARAMETER :: oe = 1.00
    DOUBLE PRECISION :: minmod(4)
    
-   ! minmod = sign(xm(:),oe)*max(0.,min(abs(xm(:)),ym(:)*sign(xm(:),oe)))
-
+   ! DO stind = 1,4
+   !  minmod(stind) = sign(xm(stind),oe)* &
+   !  max(0.,min(abs(xm(stind)),ym(stind)*sign(xm(stind),oe)))
+   ! END DO
+   
     DO stind = 1,4
         IF (xm(stind)*ym(stind) > 0.0) THEN
             IF (ABS(xm(stind)) < ABS(ym(stind))) THEN

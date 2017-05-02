@@ -1,0 +1,10 @@
+o1_visc_adiab.dat 			 ! Input File Name (State vector plot)
+o1va_BL.dat				 ! Output File Name (plot)
+7						     ! i index to make plot from
+25						     ! j max index to plot (plots from j=1,this)
+1.4							 ! gama 
+
+input is a grid with state vector contour plots.
+output is the same grid but with an M and p contour plot.
+
+Both use Tecplot 360 ex format
